@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0B0C0E"></rect><rect x="30" y="30" width="40" height="40" fill="none" stroke="#E3B55B" stroke-width="4"></rect><text x="50" y="59" font-family="Arial" font-weight="800" font-size="24" fill="#E3B55B" text-anchor="middle">P</text></svg></template>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/three@0.149.0/build/three.min.js"></script>
+<script src="./procar3d.js"></script>
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;background:#0B0C0E;color:#EEF0EC;font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:#E3B55B;text-decoration:none}
+a:hover{color:#EEF0EC}
+*{box-sizing:border-box}
+::selection{background:#E3B55B;color:#0B0C0E}
+input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:rgba(238,240,236,.15);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;background:#EEF0EC;border:6px solid #0B0C0E;box-shadow:0 0 0 1.5px #EEF0EC;cursor:grab}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;background:#EEF0EC;border:5px solid #0B0C0E;border-radius:0;cursor:grab}
+</style>
+</helmet>
+
+<div style="position:fixed;top:0;left:0;right:0;z-index:50">
+  <nav style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px clamp(20px,4vw,56px);background:linear-gradient(rgba(11,12,14,.92),rgba(11,12,14,.6));backdrop-filter:blur(14px);border-bottom:1px solid rgba(238,240,236,.06)">
+    <a href="#inicio" style="display:flex;align-items:center"><img src="assets/brands/logo.png" alt="Procar Performance LLC" style="height:40px;width:auto;display:block"></a>
+    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;align-items:center;gap:clamp(14px,2.2vw,30px);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase">
+        <a href="#tecnologia" style="color:#C7CBC6" style-hover="color:#E3B55B">{{ t.navTech }}</a>
+        <a href="#servicios" style="color:#C7CBC6" style-hover="color:#E3B55B">{{ t.navServices }}</a>
+        <a href="#nosotros" style="color:#C7CBC6" style-hover="color:#E3B55B">{{ t.navAbout }}</a>
+        <a href="#resenas" style="color:#C7CBC6" style-hover="color:#E3B55B">{{ t.navReviews }}</a>
+                <a href="#agendar" style="background:#EEF0EC;color:#0B0C0E;padding:11px 18px;font-weight:700;white-space:nowrap" style-hover="background:#E3B55B;color:#0B0C0E">{{ t.navBook }}</a>
+      </div>
+    </sc-if>
+    <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;gap:8px">
+                <div onClick="{{ toggleMenu }}" style="width:44px;height:44px;display:grid;place-content:center;gap:6px;border:1px solid rgba(238,240,236,.3);cursor:pointer">
+          <div style="width:18px;height:1.5px;background:#EEF0EC"></div>
+          <div style="width:18px;height:1.5px;background:#EEF0EC"></div>
+        </div>
+      </div>
+    </sc-if>
+  </nav>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeMenu }}" style="display:grid;background:#0B0C0E;border-bottom:1px solid rgba(238,240,236,.12);font-weight:800;font-stretch:75%;font-size:34px;text-transform:uppercase">
+      <a href="#tecnologia" style="color:#EEF0EC;padding:16px 20px;border-top:1px solid rgba(238,240,236,.08)">{{ t.navTech }}</a>
+      <a href="#servicios" style="color:#EEF0EC;padding:16px 20px;border-top:1px solid rgba(238,240,236,.08)">{{ t.navServices }}</a>
+      <a href="#nosotros" style="color:#EEF0EC;padding:16px 20px;border-top:1px solid rgba(238,240,236,.08)">{{ t.navAbout }}</a>
+      <a href="#resenas" style="color:#EEF0EC;padding:16px 20px;border-top:1px solid rgba(238,240,236,.08)">{{ t.navReviews }}</a>
+      <a href="#agendar" style="color:#0B0C0E;background:#E3B55B;padding:18px 20px">{{ t.navBook }} →</a>
+    </div>
+  </sc-if>
+</div>
+
+<section id="inicio" data-screen-label="Hero" style="position:relative;min-height:100vh;overflow:hidden;padding:120px clamp(20px,4vw,56px) 0;display:flex;flex-direction:column;background:radial-gradient(ellipse 60% 55% at 72% 45%,rgba(227,181,91,.10),transparent 70%)">
+  <div style="position:absolute;left:-20%;right:-20%;bottom:0;height:46%;perspective:600px;pointer-events:none;overflow:hidden">
+    <div ref="{{ floorRef }}" style="position:absolute;inset:0 0 -60% 0;transform:rotateX(62deg);transform-origin:50% 0;background-image:linear-gradient(rgba(227,181,91,.22) 1px,transparent 1px),linear-gradient(90deg,rgba(227,181,91,.22) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(transparent,#000 30%,#000 60%,transparent)"></div>
+  </div>
+  <div data-speed="0.25" style="position:absolute;inset:-20% 0 0 0;pointer-events:none;background-image:linear-gradient(rgba(238,240,236,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(238,240,236,.04) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 70% at 60% 40%,#000,transparent)"></div>
+  <div style="position:relative;flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:24px;align-items:center">
+    <div data-speed="-0.12" style="position:relative;z-index:2">
+      <div style="display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#9AA0A6">
+        <div style="width:7px;height:7px;background:#E3B55B;box-shadow:0 0 12px #E3B55B"></div>{{ t.heroKicker }}
+      </div>
+      <h1 style="margin:28px 0 0;font-weight:800;font-stretch:75%;font-size:clamp(64px,10.5vw,184px);line-height:.84;letter-spacing:-.02em;text-transform:uppercase">
+        <div>{{ t.heroA }}</div>
+        <div style="color:transparent;-webkit-text-stroke:1.5px #EEF0EC">{{ t.heroB }}</div>
+      </h1>
+      <p style="margin:28px 0 0;font-size:clamp(18px,1.6vw,22px);line-height:1.45;max-width:520px;text-wrap:pretty;color:#C7CBC6">{{ t.heroSub }}</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:36px">
+        <a href="#agendar" style="display:flex;align-items:center;background:#E3B55B;color:#0B0C0E;padding:15px 22px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em" style-hover="background:#EEF0EC;color:#0B0C0E"><span style="white-space:nowrap">{{ t.ctaBook }} →</span></a>
+        <a href="#servicios" onClick="{{ pickUrgent }}" style="display:flex;align-items:center;border:1px solid rgba(255,77,46,.7);color:#FF6A4F;padding:15px 22px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em" style-hover="background:#FF4D2E;color:#0B0C0E"><span style="white-space:nowrap">{{ t.ctaUrg }}</span></a>
+      </div>
+    </div>
+    <div data-speed="0.08" style="position:relative;height:clamp(380px,62vh,680px);margin:0 calc(-1 * clamp(20px,4vw,56px)) 0 0">
+      <canvas ref="{{ chipRef }}" style="position:absolute;inset:0;width:100%;height:100%;display:block"></canvas>
+      <div style="position:absolute;top:8%;right:clamp(20px,4vw,56px);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:#E3B55B;text-align:right;display:grid;gap:6px;pointer-events:none">
+        <sc-for list="{{ t.wheelHud }}" as="h" hint-placeholder-count="3"><div style="display:flex;gap:8px;justify-content:flex-end;align-items:center"><span>{{ h }}</span><div style="width:18px;height:1px;background:#E3B55B"></div></div></sc-for>
+      </div>
+      <div style="position:absolute;top:50%;left:6%;width:10%;height:1px;background:linear-gradient(90deg,transparent,#E3B55B);pointer-events:none"></div>
+      <div style="position:absolute;top:calc(50% - 22px);left:6%;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#9AA0A6;pointer-events:none">{{ t.scanWord }}</div>
+      <div style="position:absolute;bottom:10%;left:8%;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#6B7178;text-transform:uppercase;pointer-events:none">↻ {{ t.drag }}</div>
+    </div>
+  </div>
+  <div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));border-top:1px solid rgba(238,240,236,.1);margin:32px calc(-1 * clamp(20px,4vw,56px)) 0">
+    <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+      <div style="padding:22px clamp(20px,4vw,56px);border-right:1px solid rgba(238,240,236,.1)">
+        <div style="font-weight:800;font-stretch:75%;font-size:46px;line-height:1">{{ s.v }}</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#9AA0A6;text-transform:uppercase;margin-top:8px">{{ s.l }}</div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section ref="{{ splitRef }}" data-screen-label="Manifiesto" style="position:relative;overflow:hidden;padding:clamp(100px,14vw,200px) 0 clamp(60px,8vw,120px)">
+  <div ref="{{ splitA }}" style="font-weight:800;font-stretch:75%;font-size:clamp(40px,14vw,260px);line-height:.82;letter-spacing:-.02em;text-transform:uppercase;white-space:nowrap;padding-left:4vw;will-change:transform">{{ t.splitA }}</div>
+  <div ref="{{ splitB }}" style="font-weight:800;font-stretch:75%;font-size:clamp(40px,14vw,260px);line-height:.82;letter-spacing:-.02em;text-transform:uppercase;white-space:nowrap;text-align:right;padding-right:4vw;color:transparent;-webkit-text-stroke:1.5px #E3B55B;text-shadow:0 0 40px rgba(227,181,91,.35);will-change:transform">{{ t.splitB }}</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:clamp(32px,5vw,80px);padding:clamp(64px,8vw,120px) clamp(20px,4vw,56px) 0;align-items:start">
+    <div data-reveal="" style="display:grid;gap:1px;background:rgba(238,240,236,.1);border:1px solid rgba(238,240,236,.1)">
+      <div style="padding:16px 22px;background:#0B0C0E;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#FF6A4F">✕ {{ t.otherShops }}</div>
+      <sc-for list="{{ t.story }}" as="s" hint-placeholder-count="3">
+        <div style="display:grid;grid-template-columns:40px 1fr;gap:12px;padding:22px;background:#0B0C0E;align-items:baseline">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#6B7178">{{ $index }}</span>
+          <span style="font-size:clamp(20px,2vw,26px);line-height:1.25;font-weight:500;color:#9AA0A6;text-decoration:line-through;text-decoration-color:rgba(255,77,46,.7);text-decoration-thickness:2px">{{ s }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div data-reveal="">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#E3B55B">✓ {{ t.atProcar }}</div>
+      <p style="margin:20px 0 0;font-size:clamp(26px,2.8vw,40px);line-height:1.15;font-weight:600;letter-spacing:-.01em;text-wrap:pretty">{{ t.manifesto }}</p>
+      <a href="#agendar" style="display:inline-flex;margin-top:32px;border-bottom:1px solid #E3B55B;color:#E3B55B;padding-bottom:6px;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.08em" style-hover="color:#EEF0EC"><span style="white-space:nowrap">{{ t.stopGuessing }} →</span></a>
+    </div>
+  </div>
+</section>
+
+<section id="tecnologia" data-screen-label="Prueba 5V" style="position:relative;padding:clamp(80px,10vw,140px) clamp(20px,4vw,56px);border-top:1px solid rgba(238,240,236,.08);background:#08090B">
+  <div style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:end">
+    <div style="max-width:900px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#E3B55B">01 — {{ t.v5Kicker }}</div>
+      <h2 data-reveal="" style="margin:20px 0 0;font-weight:800;font-stretch:75%;font-size:clamp(44px,6.4vw,110px);line-height:.88;letter-spacing:-.015em;text-transform:uppercase;text-wrap:balance">{{ t.v5Title }}</h2>
+    </div>
+    <p style="margin:0;max-width:380px;font-size:17px;line-height:1.55;color:#9AA0A6">{{ t.v5Lead }}</p>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:24px;margin-top:56px;align-items:stretch">
+    <div style="position:relative;min-height:460px;border:1px solid rgba(238,240,236,.1);background:radial-gradient(ellipse at 50% 60%,rgba(227,181,91,.06),transparent 70%)"><div style="position:absolute;top:-1px;left:-1px;width:14px;height:14px;border-top:2px solid #E3B55B;border-left:2px solid #E3B55B;pointer-events:none"></div><div style="position:absolute;top:-1px;right:-1px;width:14px;height:14px;border-top:2px solid #E3B55B;border-right:2px solid #E3B55B;pointer-events:none"></div><div style="position:absolute;bottom:-1px;left:-1px;width:14px;height:14px;border-bottom:2px solid #E3B55B;border-left:2px solid #E3B55B;pointer-events:none"></div><div style="position:absolute;bottom:-1px;right:-1px;width:14px;height:14px;border-bottom:2px solid #E3B55B;border-right:2px solid #E3B55B;pointer-events:none"></div>
+      <canvas ref="{{ chip2Ref }}" style="position:absolute;inset:0;width:100%;height:100%;display:block"></canvas>
+      <div style="position:absolute;top:16px;left:16px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#6B7178;pointer-events:none">Diagnóstico · ECM</div>
+      <div style="position:absolute;top:16px;right:16px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:{{ vColor }};pointer-events:none">● {{ vCode }}</div>
+    </div>
+    <div style="position:relative;display:flex;flex-direction:column;border:1px solid rgba(238,240,236,.1)"><div style="position:absolute;top:-1px;left:-1px;width:14px;height:14px;border-top:2px solid #E3B55B;border-left:2px solid #E3B55B;pointer-events:none"></div><div style="position:absolute;top:-1px;right:-1px;width:14px;height:14px;border-top:2px solid #E3B55B;border-right:2px solid #E3B55B;pointer-events:none"></div><div style="position:absolute;bottom:-1px;left:-1px;width:14px;height:14px;border-bottom:2px solid #E3B55B;border-left:2px solid #E3B55B;pointer-events:none"></div><div style="position:absolute;bottom:-1px;right:-1px;width:14px;height:14px;border-bottom:2px solid #E3B55B;border-right:2px solid #E3B55B;pointer-events:none"></div>
+      <div style="padding:clamp(24px,3vw,40px);border-bottom:1px solid rgba(238,240,236,.1)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#9AA0A6">{{ t.v5Probe }}</div>
+        <div style="display:flex;align-items:baseline;gap:10px;margin-top:10px">
+          <div style="font-family:'JetBrains Mono',monospace;font-weight:500;font-size:clamp(72px,8vw,120px);line-height:.9;letter-spacing:-.04em;color:{{ vColor }}">{{ vText }}</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:28px;color:#9AA0A6">V</div>
+        </div>
+        <input type="range" min="0" max="5" step="0.05" value="{{ volts }}" onInput="{{ onVolts }}" style="width:100%;margin-top:28px">
+        <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B7178;margin-top:10px"><span>0 V</span><span>2.5 V</span><span>5 V</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:20px">
+          <sc-for list="{{ presets }}" as="p" hint-placeholder-count="3">
+            <div onClick="{{ p.set }}" style="padding:12px 16px;border:1px solid rgba(238,240,236,.2);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;cursor:pointer" style-hover="border-color:#E3B55B;color:#E3B55B">{{ p.label }}</div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="padding:clamp(24px,3vw,40px);flex:1;display:flex;flex-direction:column;gap:20px">
+        <div>
+          <div style="font-weight:800;font-stretch:75%;font-size:clamp(34px,3.4vw,52px);line-height:.95;text-transform:uppercase;color:{{ vColor }}">{{ vTitle }}</div>
+          <p style="margin:12px 0 0;font-size:17px;line-height:1.5;color:#C7CBC6">{{ vBody }}</p>
+        </div>
+        <div style="display:grid;gap:1px;background:rgba(238,240,236,.08);margin-top:auto">
+          <sc-for list="{{ checks }}" as="c" hint-placeholder-count="4">
+            <div style="display:flex;justify-content:space-between;gap:12px;padding:12px 14px;background:#08090B;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em">
+              <span style="color:#C7CBC6">{{ c.label }}</span><span style="color:{{ c.color }}">{{ c.status }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div data-reveal="" style="display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start;margin-top:48px;max-width:980px">
+    <div style="font-weight:800;font-stretch:75%;font-size:80px;line-height:.7;color:#E3B55B">“</div>
+    <div>
+      <p style="margin:0;font-size:clamp(20px,2vw,26px);line-height:1.35;font-weight:500;text-wrap:pretty">{{ t.v5Quote }}</p>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#9AA0A6;margin-top:14px">Yoel Rodríguez — CEO</div>
+    </div>
+  </div>
+  <div data-reveal="" style="display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:56px;padding:28px clamp(20px,3vw,36px);border:1px solid rgba(227,181,91,.35);background:linear-gradient(90deg,rgba(227,181,91,.08),transparent)">
+    <div style="display:grid;gap:6px;max-width:560px"><div style="font-size:17px;line-height:1.45;color:#C7CBC6">{{ t.cta5vSub }}</div></div>
+    <a href="#agendar" onClick="{{ bookDiag }}" style="position:relative;display:inline-flex;align-items:center;gap:14px;background:#E3B55B;color:#0B0C0E;padding:15px 22px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em;box-shadow:0 0 0 1px rgba(227,181,91,.4),0 0 32px rgba(227,181,91,.25)" style-hover="background:#F2D48A;color:#0B0C0E"><span style="white-space:nowrap">{{ t.cta5v }} →</span></a>
+  </div>
+</section>
+
+<section data-screen-label="Sistema nervioso" style="position:relative;padding:clamp(80px,10vw,140px) clamp(20px,4vw,56px);overflow:hidden">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(24px,4vw,56px);align-items:center">
+    <div style="max-width:520px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#E3B55B">02 — {{ t.netKicker }}</div>
+      <h2 data-reveal="" style="margin:20px 0 0;font-weight:800;font-stretch:75%;font-size:clamp(44px,5.6vw,96px);line-height:.88;letter-spacing:-.015em;text-transform:uppercase;text-wrap:balance">{{ t.netTitle }}</h2>
+      <p style="margin:24px 0 0;font-size:17px;line-height:1.55;color:#9AA0A6">{{ t.netSub }}</p>
+      <div style="display:grid;margin-top:32px;border-top:1px solid rgba(238,240,236,.1)">
+        <sc-for list="{{ nodes }}" as="n" hint-placeholder-count="7">
+          <sc-if value="{{ n.on }}">
+            <div onMouseEnter="{{ n.enter }}" onMouseLeave="{{ n.leave }}" onClick="{{ n.enter }}" style="display:grid;grid-template-columns:84px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid rgba(227,181,91,.5);cursor:pointer">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#E3B55B">{{ n.code }}</span><span style="font-size:15px;color:#EEF0EC">{{ n.desc }}</span>
+            </div>
+          </sc-if>
+          <sc-if value="{{ n.off }}">
+            <div onMouseEnter="{{ n.enter }}" onMouseLeave="{{ n.leave }}" onClick="{{ n.enter }}" style="display:grid;grid-template-columns:84px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid rgba(238,240,236,.1);cursor:pointer">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9AA0A6">{{ n.code }}</span><span style="font-size:15px;color:#9AA0A6">{{ n.desc }}</span>
+            </div>
+          </sc-if>
+        </sc-for>
+      </div>
+      <div style="margin-top:32px"><a href="#agendar" onClick="{{ bookProg }}" style="position:relative;display:inline-flex;align-items:center;gap:14px;background:#E3B55B;color:#0B0C0E;padding:15px 22px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em;box-shadow:0 0 0 1px rgba(227,181,91,.4),0 0 32px rgba(227,181,91,.25)" style-hover="background:#F2D48A;color:#0B0C0E"><span style="white-space:nowrap">{{ t.ctaNet }} →</span></a></div>
+    </div>
+    <div data-speed="0.06" style="position:relative;height:clamp(360px,54vw,640px);margin-right:calc(-1 * clamp(20px,4vw,56px))">
+      <canvas ref="{{ netRef }}" style="position:absolute;inset:0;width:100%;height:100%;display:block"></canvas>
+      <div ref="{{ labelsRef }}" style="position:absolute;inset:0;pointer-events:none;overflow:hidden"></div>
+      <div style="position:absolute;bottom:12px;left:12px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#6B7178;text-transform:uppercase;pointer-events:none">↻ {{ t.drag }}</div>
+    </div>
+  </div>
+</section>
+
+<section id="servicios" data-screen-label="Servicios" style="padding:clamp(80px,10vw,140px) clamp(20px,4vw,56px);border-top:1px solid rgba(238,240,236,.08)">
+  <div style="display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap">
+    <div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#E3B55B">03 — {{ t.navServices }}</div>
+      <h2 data-reveal="" style="margin:20px 0 0;font-weight:800;font-stretch:75%;font-size:clamp(56px,9vw,160px);line-height:.84;letter-spacing:-.02em;text-transform:uppercase">{{ t.servicesTitle }}</h2>
+    </div>
+    <p style="margin:0;max-width:360px;font-size:16px;line-height:1.55;color:#9AA0A6">{{ t.servicesSub }}</p>
+  </div>
+  <div style="display:grid;grid-auto-flow:column;grid-auto-columns:minmax(210px,1fr);gap:12px;overflow-x:auto;margin-top:48px;padding:2px 2px 8px">
+    <sc-for list="{{ services }}" as="s" hint-placeholder-count="5">
+      <sc-if value="{{ s.active }}"><div style="position:relative;height:210px;overflow:hidden;cursor:pointer;border:1px solid #E3B55B;background:#0F1114;box-shadow:0 0 0 1px #E3B55B,0 0 40px rgba(227,181,91,.2);" >
+          <img src="{{ s.img }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;filter:grayscale(0)">
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,12,14,.2),#0B0C0E 92%)"></div>
+          <div style="position:absolute;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:#E3B55B"><span>Nº {{ s.num }}</span><span>● ACTIVE</span></div>
+          <div style="position:absolute;left:16px;right:16px;bottom:16px;display:grid;gap:8px">
+            <div style="font-weight:800;font-stretch:75%;font-size:26px;line-height:.95;text-transform:uppercase;color:#EEF0EC">{{ s.name }}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:14px;color:#E3B55B">{{ s.price }}</div>
+          </div>
+        </div></sc-if>
+      <sc-if value="{{ s.inactive }}"><div onClick="{{ s.select }}" style="position:relative;height:210px;overflow:hidden;cursor:pointer;border:1px solid rgba(238,240,236,.12);background:#0F1114;" style-hover="border-color:rgba(227,181,91,.6)">
+          <img src="{{ s.img }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.22;filter:grayscale(1)">
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,12,14,.2),#0B0C0E 92%)"></div>
+          <div style="position:absolute;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:#6B7178"><span>Nº {{ s.num }}</span><span>○</span></div>
+          <div style="position:absolute;left:16px;right:16px;bottom:16px;display:grid;gap:8px">
+            <div style="font-weight:800;font-stretch:75%;font-size:26px;line-height:.95;text-transform:uppercase;color:#9AA0A6">{{ s.name }}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:14px;color:#6B7178">{{ s.price }}</div>
+          </div>
+        </div></sc-if>
+    </sc-for>
+  </div>
+  <div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));margin-top:16px;border:1px solid rgba(238,240,236,.12);background:#0F1114"><div style="position:absolute;top:-1px;left:-1px;width:14px;height:14px;border-top:2px solid #E3B55B;border-left:2px solid #E3B55B;pointer-events:none;z-index:2"></div><div style="position:absolute;top:-1px;right:-1px;width:14px;height:14px;border-top:2px solid #E3B55B;border-right:2px solid #E3B55B;pointer-events:none;z-index:2"></div><div style="position:absolute;bottom:-1px;left:-1px;width:14px;height:14px;border-bottom:2px solid #E3B55B;border-left:2px solid #E3B55B;pointer-events:none;z-index:2"></div><div style="position:absolute;bottom:-1px;right:-1px;width:14px;height:14px;border-bottom:2px solid #E3B55B;border-right:2px solid #E3B55B;pointer-events:none;z-index:2"></div>
+    <div style="position:relative;min-height:clamp(300px,36vw,520px);overflow:hidden">
+      <img src="{{ cur.img }}" alt="{{ cur.name }}" data-speed="0.05" style="position:absolute;inset:-8% 0;width:100%;height:116%;object-fit:cover;filter:saturate(.75) contrast(1.05)">
+      <div style="position:absolute;inset:0;background:linear-gradient(90deg,transparent 50%,#0F1114),linear-gradient(transparent 45%,rgba(11,12,14,.95))"></div>
+      <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 3px);pointer-events:none"></div>
+      <div style="position:absolute;top:16%;left:14%;width:38%;height:38%;border:1px solid rgba(227,181,91,.7);pointer-events:none"></div>
+      <div style="position:absolute;top:calc(16% - 20px);left:14%;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#0B0C0E;background:#E3B55B;padding:3px 6px">TARGET · {{ cur.short }}</div>
+      <div style="position:absolute;top:14px;right:16px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#E3B55B;background:rgba(11,12,14,.7);padding:4px 7px">● Nº {{ cur.num }}</div>
+      <div style="position:absolute;left:24px;bottom:22px;display:grid;gap:4px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#C7CBC6">{{ cur.fromLbl }}</div>
+        <div style="font-weight:800;font-stretch:75%;font-size:clamp(72px,8vw,120px);line-height:.82;color:#E3B55B;text-shadow:0 0 40px rgba(227,181,91,.35)">{{ cur.price }}</div>
+      </div>
+    </div>
+    <div style="padding:clamp(24px,3vw,44px);display:grid;gap:20px;align-content:start">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9AA0A6">{{ cur.tag }}</div>
+        <sc-if value="{{ cur.urgent }}"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:#FF4D2E;color:#0B0C0E;padding:4px 8px">{{ t.priority }}</div></sc-if>
+      </div>
+      <h3 style="margin:0;font-weight:800;font-stretch:75%;font-size:clamp(36px,3.6vw,56px);line-height:.9;text-transform:uppercase">{{ cur.name }}</h3>
+      <p style="margin:0;font-size:16px;line-height:1.6;color:#C7CBC6;text-wrap:pretty">{{ cur.desc }}</p>
+      <div style="display:grid;gap:8px">
+        <sc-for list="{{ cur.notes }}" as="n" hint-placeholder-count="1">
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:12px;padding:12px 14px;border-left:1px solid #E3B55B;background:rgba(227,181,91,.05);font-size:14px;line-height:1.5">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#E3B55B;padding-top:2px">!</span><span>{{ n }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:4px">
+        <a href="#agendar" onClick="{{ cur.book }}" style="display:inline-flex;align-items:center;background:#E3B55B;color:#0B0C0E;padding:15px 22px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em;box-shadow:0 0 0 1px rgba(227,181,91,.4),0 0 32px rgba(227,181,91,.25)" style-hover="background:#F2D48A;color:#0B0C0E"><span style="white-space:nowrap">{{ cur.cta }} →</span></a>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B7178;max-width:260px">{{ t.nonRefund }}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Esto o aquello" style="padding:clamp(80px,10vw,140px) clamp(20px,4vw,56px);border-top:1px solid rgba(238,240,236,.08);background:#08090B">
+  <div style="display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap">
+    <div style="max-width:900px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#E3B55B">VS — {{ t.totKicker }}</div>
+      <h2 data-reveal="" style="margin:20px 0 0;font-weight:800;font-stretch:75%;font-size:clamp(44px,6vw,104px);line-height:.88;letter-spacing:-.015em;text-transform:uppercase;text-wrap:balance">{{ t.totTitle }}</h2>
+    </div>
+    <p style="margin:0;max-width:340px;font-size:16px;line-height:1.55;color:#9AA0A6">{{ t.totSub }}</p>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:1px;background:rgba(238,240,236,.1);border:1px solid rgba(238,240,236,.1);margin-top:48px">
+    <sc-for list="{{ tot }}" as="q" hint-placeholder-count="8">
+      <div onClick="{{ q.toggle }}" style="position:relative;background:#08090B;padding:24px;display:grid;gap:14px;min-height:250px;align-content:start;cursor:pointer" style-hover="background:#0F1114">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#6B7178">Nº {{ q.n }}</div>
+        <sc-for list="{{ q.opts }}" as="o" hint-placeholder-count="2">
+            <sc-if value="{{ o.hi }}"><div style="font-weight:800;font-stretch:75%;font-size:30px;line-height:.95;text-transform:uppercase;color:#E3B55B;text-shadow:0 0 24px rgba(227,181,91,.4)">{{ o.text }}</div></sc-if>
+            <sc-if value="{{ o.lo }}"><div style="font-weight:800;font-stretch:75%;font-size:30px;line-height:.95;text-transform:uppercase;color:#4A5057;text-decoration:line-through;text-decoration-thickness:2px">{{ o.text }}</div></sc-if>
+            <sc-if value="{{ o.neu }}"><div style="font-weight:800;font-stretch:75%;font-size:30px;line-height:.95;text-transform:uppercase;color:#EEF0EC">{{ o.text }}</div></sc-if>
+            <sc-if value="{{ o.vs }}"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#6B7178">— VS —</div></sc-if>
+          </sc-for>
+        <sc-if value="{{ q.open }}"><div style="margin-top:auto;padding-top:14px;border-top:1px solid rgba(227,181,91,.35);font-size:15px;line-height:1.45;color:#EEF0EC"><span style="font-family:'JetBrains Mono',monospace;color:#E3B55B">Yoel: </span>{{ q.ans }}</div></sc-if>
+        <sc-if value="{{ q.closed }}"><div style="margin-top:auto;padding-top:14px;border-top:1px solid rgba(238,240,236,.08);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#6B7178">{{ t.totTap }} ▸</div></sc-if>
+      </div>
+    </sc-for>
+  </div>
+  <div data-reveal="" style="display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin-top:40px">
+    <p style="margin:0;max-width:760px;font-size:clamp(24px,2.6vw,36px);line-height:1.2;font-weight:600;text-wrap:pretty">{{ t.totClose }}</p>
+    <a href="#agendar" onClick="{{ bookDiag }}" style="display:inline-flex;align-items:center;background:#E3B55B;color:#0B0C0E;padding:15px 22px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em;box-shadow:0 0 0 1px rgba(227,181,91,.4),0 0 32px rgba(227,181,91,.25)" style-hover="background:#F2D48A;color:#0B0C0E"><span style="white-space:nowrap">{{ t.cta5v }} →</span></a>
+  </div>
+</section>
+
+<section id="marcas" data-screen-label="Marcas" style="padding:clamp(80px,10vw,140px) clamp(20px,4vw,56px);background:#08090B;border-top:1px solid rgba(238,240,236,.08)">
+  <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#E3B55B">04 — {{ t.brandsKicker }}</div>
+  <h2 data-reveal="" style="margin:20px 0 0;font-weight:800;font-stretch:75%;font-size:clamp(40px,5vw,84px);line-height:.9;text-transform:uppercase;max-width:1000px;text-wrap:balance">{{ t.brandsTitle }}</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1px;background:rgba(238,240,236,.08);border:1px solid rgba(238,240,236,.08);margin-top:48px">
+    <sc-for list="{{ brands }}" as="b" hint-placeholder-count="15">
+      <div style="aspect-ratio:1;background:#08090B;display:grid;place-items:center;padding:24px" style-hover="background:#111419">
+        <img src="{{ b.src }}" alt="{{ b.name }}" style="width:min(100%,110px);height:auto;display:block">
+      </div>
+    </sc-for>
+  </div>
+  <div style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:24px;align-items:center">
+    <div style="font-weight:800;font-stretch:75%;font-size:32px;text-transform:uppercase">{{ t.brandsMore }}</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#9AA0A6">{{ t.allBrands }}</div>
+  </div>
+  <div style="margin-top:40px;display:flex;justify-content:center"><a href="#agendar" style="position:relative;display:inline-flex;align-items:center;gap:14px;background:#E3B55B;color:#0B0C0E;padding:15px 22px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em;box-shadow:0 0 0 1px rgba(227,181,91,.4),0 0 32px rgba(227,181,91,.25)" style-hover="background:#F2D48A;color:#0B0C0E"><span style="white-space:nowrap">{{ t.ctaBrands }} →</span></a></div>
+</section>
+
+<section id="nosotros" data-screen-label="Quiénes somos" style="padding:clamp(80px,10vw,140px) clamp(20px,4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(48px,6vw,96px);align-items:center;overflow:hidden">
+  <div style="position:relative;height:clamp(460px,48vw,680px)">
+    <div data-speed="0.1" style="position:absolute;left:0;top:0;width:66%;height:78%;overflow:hidden;border:1px solid rgba(238,240,236,.1)">
+      <img src="assets/img/car.webp" alt="" style="width:100%;height:100%;object-fit:cover;filter:saturate(.8)">
+    </div>
+    <div data-speed="-0.08" style="position:absolute;right:0;bottom:0;width:56%;height:62%;overflow:hidden;border:1px solid rgba(238,240,236,.1);box-shadow:0 30px 60px rgba(0,0,0,.5)">
+      <img src="assets/img/about.webp" alt="" style="width:100%;height:100%;object-fit:cover;filter:saturate(.8)">
+    </div>
+    <div data-speed="-0.2" style="position:absolute;left:6%;bottom:8%;background:#0B0C0E;border:1px solid rgba(227,181,91,.4);padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9AA0A6;display:grid;gap:6px">
+      <div style="color:#E3B55B">● Yoel Rodríguez · CEO</div>
+      <div>{{ t.exp }} <span style="color:#EEF0EC">17 {{ t.years }}</span></div>
+      <div>{{ t.focus }} <span style="color:#EEF0EC">{{ t.focusV }}</span></div>
+    </div>
+  </div>
+  <div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#E3B55B">05 — {{ t.navAbout }}</div>
+    <h2 data-reveal="" style="margin:20px 0 0;font-weight:800;font-stretch:75%;font-size:clamp(44px,5vw,84px);line-height:.88;letter-spacing:-.015em;text-transform:uppercase;text-wrap:balance">{{ t.aboutTitle }}</h2>
+    <p style="margin:28px 0 0;font-size:17px;line-height:1.65;color:#C7CBC6;max-width:600px;text-wrap:pretty">{{ t.aboutP1 }}</p>
+    <p style="margin:14px 0 0;font-size:17px;line-height:1.65;color:#C7CBC6;max-width:600px;text-wrap:pretty">{{ t.aboutP2 }}</p>
+    <div style="display:grid;margin-top:36px;border-top:1px solid rgba(238,240,236,.12)">
+      <sc-for list="{{ promises }}" as="p" hint-placeholder-count="3">
+        <div style="display:grid;grid-template-columns:48px 1fr;gap:12px;padding:20px 0;border-bottom:1px solid rgba(238,240,236,.12)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#E3B55B;padding-top:4px">{{ p.n }}</div>
+          <div>
+            <div style="font-weight:800;font-stretch:75%;font-size:24px;text-transform:uppercase;line-height:1">{{ p.title }}</div>
+            <div style="margin-top:6px;font-size:15px;line-height:1.5;color:#9AA0A6">{{ p.body }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section id="proceso" data-screen-label="Proceso" style="position:relative;overflow:hidden;padding:clamp(80px,10vw,140px) clamp(20px,4vw,56px);border-top:1px solid rgba(238,240,236,.08);background:radial-gradient(ellipse 60% 40% at 50% 100%,rgba(227,181,91,.08),transparent 70%)">
+  <div style="position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(227,181,91,.18) 1px,transparent 1px);background-size:28px 28px;mask-image:linear-gradient(transparent,#000 40%,transparent)"></div>
+  <div style="position:relative;display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap">
+    <div style="max-width:900px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#E3B55B">06 — {{ t.navProcess }}</div>
+      <h2 data-reveal="" style="margin:20px 0 0;font-weight:800;font-stretch:75%;font-size:clamp(44px,6vw,110px);line-height:.86;letter-spacing:-.015em;text-transform:uppercase;text-wrap:balance">{{ t.processTitle }}</h2>
+    </div>
+    <p style="margin:0;max-width:380px;font-size:16px;line-height:1.55;color:#9AA0A6">{{ t.procLead }}</p>
+  </div>
+  <div ref="{{ procRef }}" style="position:relative;margin-top:72px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px">
+    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+      <div style="position:absolute;left:36px;right:36px;top:36px;height:2px;background:rgba(238,240,236,.1)"><div ref="{{ procLine }}" style="height:100%;background:#E3B55B;transform-origin:left;transform:scaleX(0);box-shadow:0 0 14px #E3B55B"></div></div>
+    </sc-if>
+    <sc-for list="{{ steps }}" as="st" hint-placeholder-count="5">
+      <div data-step="" style="position:relative;display:grid;gap:18px;align-content:start;transition:opacity .5s">
+        <div data-node="" style="position:relative;width:74px;height:74px;display:grid;place-items:center;background:#0B0C0E;border:1px solid #E3B55B;transition:box-shadow .5s">
+          <div style="position:absolute;inset:6px;border:1px dashed rgba(227,181,91,.45)"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:20px;color:#E3B55B">{{ st.n }}</div>
+        </div>
+        <div style="position:relative;padding:22px;border:1px solid rgba(238,240,236,.1);background:linear-gradient(180deg,rgba(227,181,91,.06),rgba(11,12,14,.6));min-height:220px;display:grid;gap:12px;align-content:start"><div style="position:absolute;top:-1px;left:-1px;width:12px;height:12px;border-top:2px solid #E3B55B;border-left:2px solid #E3B55B;pointer-events:none"></div><div style="position:absolute;bottom:-1px;right:-1px;width:12px;height:12px;border-bottom:2px solid #E3B55B;border-right:2px solid #E3B55B;pointer-events:none"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:#E3B55B">{{ t.stepWord }} {{ st.n }} · {{ st.code }}</div>
+          <div style="font-weight:800;font-stretch:75%;font-size:30px;text-transform:uppercase;line-height:.92">{{ st.title }}</div>
+          <div style="font-size:15px;line-height:1.55;color:#9AA0A6">{{ st.body }}</div>
+          <div style="display:flex;gap:3px;margin-top:6px"><div style="flex:1;height:3px;background:#E3B55B"></div><div style="flex:1;height:3px;background:rgba(227,181,91,.5)"></div><div style="flex:1;height:3px;background:rgba(227,181,91,.2)"></div><div style="flex:3;height:3px;background:rgba(238,240,236,.06)"></div></div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="position:relative;margin-top:32px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:22px 24px;border:1px solid rgba(227,181,91,.5);background:rgba(227,181,91,.04)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;color:#0B0C0E;background:#E3B55B;padding:5px 9px">{{ t.guaranteeTag }}</div>
+    <div style="font-size:17px;line-height:1.45;flex:1;min-width:240px">{{ t.guarantee }}</div>
+    <a href="#agendar" style="display:inline-flex;align-items:center;background:#E3B55B;color:#0B0C0E;padding:15px 22px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em;box-shadow:0 0 0 1px rgba(227,181,91,.4),0 0 32px rgba(227,181,91,.25)" style-hover="background:#F2D48A;color:#0B0C0E"><span style="white-space:nowrap">{{ t.ctaProc }} →</span></a>
+  </div>
+</section>
+
+<section id="resenas" data-screen-label="Reseñas" style="padding:clamp(80px,10vw,140px) clamp(20px,4vw,56px);border-top:1px solid rgba(238,240,236,.08)">
+  <div style="display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap">
+    <div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#E3B55B">07 — {{ t.navReviews }}</div>
+      <div style="display:flex;align-items:end;gap:24px;flex-wrap:wrap;margin-top:20px">
+        <div style="font-weight:800;font-stretch:75%;font-size:clamp(110px,14vw,220px);line-height:.78">5.0</div>
+        <div style="padding-bottom:8px">
+          <div style="color:#E3B55B;font-size:24px;letter-spacing:4px">★★★★★</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#9AA0A6;margin-top:8px">{{ t.reviewsCount }}</div>
+        </div>
+      </div>
+    </div>
+    <a href="https://admin.trustindex.io/api/googleWriteReview?place-id=ChIJCZafOfIp2YgRXGLHXZKqzeY" style="border:1px solid rgba(238,240,236,.4);color:#EEF0EC;padding:14px 20px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em" style-hover="background:#EEF0EC;color:#0B0C0E"><span style="white-space:nowrap">{{ t.writeReview }} ↗</span></a>
+  </div>
+  <div style="columns:3 300px;column-gap:16px;margin-top:56px">
+    <sc-for list="{{ reviews }}" as="rv" hint-placeholder-count="6">
+      <div style="position:relative;break-inside:avoid;margin-bottom:16px;padding:28px;border:1px solid rgba(238,240,236,.1);background:#0F1114"><div style="position:absolute;top:-1px;left:-1px;width:14px;height:14px;border-top:2px solid #E3B55B;border-left:2px solid #E3B55B;pointer-events:none"></div><div style="position:absolute;top:-1px;right:-1px;width:14px;height:14px;border-top:2px solid #E3B55B;border-right:2px solid #E3B55B;pointer-events:none"></div><div style="position:absolute;bottom:-1px;left:-1px;width:14px;height:14px;border-bottom:2px solid #E3B55B;border-left:2px solid #E3B55B;pointer-events:none"></div><div style="position:absolute;bottom:-1px;right:-1px;width:14px;height:14px;border-bottom:2px solid #E3B55B;border-right:2px solid #E3B55B;pointer-events:none"></div>
+        <div style="color:#E3B55B;font-size:13px;letter-spacing:3px">★★★★★</div>
+        <p style="margin:14px 0 0;font-size:17px;line-height:1.5;text-wrap:pretty">“{{ rv.text }}”</p>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:20px;padding-top:16px;border-top:1px solid rgba(238,240,236,.08)">
+          <div style="width:34px;height:34px;border:1px solid #E3B55B;color:#E3B55B;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px">{{ rv.initial }}</div>
+          <div>
+            <div style="font-weight:700;font-size:14px">{{ rv.name }}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:#6B7178;text-transform:uppercase">Google</div>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section id="agendar" data-screen-label="Agendar" style="position:relative;overflow:hidden;padding:clamp(100px,12vw,180px) clamp(20px,4vw,56px) clamp(80px,10vw,140px);background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(227,181,91,.14),transparent 70%),#08090B;border-top:1px solid rgba(227,181,91,.3)">
+  <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#E3B55B;text-align:center">08 — {{ t.navBook }}</div>
+  <h2 data-reveal="" style="margin:24px auto 0;font-weight:800;font-stretch:75%;font-size:clamp(56px,10vw,190px);line-height:.82;letter-spacing:-.02em;text-transform:uppercase;text-align:center;max-width:1400px">
+    <div>{{ t.bookA }}</div>
+    <div style="color:transparent;-webkit-text-stroke:1.5px #E3B55B">{{ t.bookB }}</div>
+  </h2>
+  <p style="margin:28px auto 0;max-width:560px;text-align:center;font-size:18px;line-height:1.5;color:#C7CBC6">{{ t.bookSub }}</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px;margin-top:64px">
+    <sc-for list="{{ services }}" as="s" hint-placeholder-count="5">
+      <div style="position:relative;display:grid;gap:14px;align-content:start;padding:24px;border:1px solid rgba(238,240,236,.12);background:#0B0C0E" style-hover="border-color:rgba(227,181,91,.6)"><div style="position:absolute;top:-1px;left:-1px;width:12px;height:12px;border-top:2px solid #E3B55B;border-left:2px solid #E3B55B;pointer-events:none"></div><div style="position:absolute;bottom:-1px;right:-1px;width:12px;height:12px;border-bottom:2px solid #E3B55B;border-right:2px solid #E3B55B;pointer-events:none"></div>
+        <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:#6B7178"><span>Nº {{ s.num }}</span><span style="color:#E3B55B">{{ s.price }}</span></div>
+        <div style="font-weight:800;font-stretch:75%;font-size:28px;line-height:.92;text-transform:uppercase;min-height:52px">{{ s.name }}</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.6;color:#9AA0A6">{{ s.tag }}</div>
+        <a href="#" data-ghl-service="{{ s.num }}" style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;background:#E3B55B;color:#0B0C0E;padding:14px 16px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em" style-hover="background:#F2D48A;color:#0B0C0E"><span style="white-space:nowrap">{{ s.cta }}</span><span>→</span></a>
+      </div>
+    </sc-for>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px">
+    <a href="https://wa.me/" style="flex:1 1 320px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;border:1px solid rgba(37,211,102,.5);background:#0B0C0E;color:#EEF0EC;padding:22px 24px" style-hover="background:#0F1512;color:#EEF0EC">
+      <div style="display:grid;gap:6px"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:#25D366">● WHATSAPP</div><div style="font-weight:800;font-stretch:75%;font-size:26px;text-transform:uppercase">{{ t.waTitle }}</div></div>
+      <span style="font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#25D366;white-space:nowrap">{{ t.waCta }} →</span>
+    </a>
+    <div style="flex:2 1 420px;display:grid;gap:10px;padding:22px 24px;border:1px solid rgba(238,240,236,.12)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#E3B55B">{{ t.bringTitle }}</div>
+      <sc-for list="{{ t.bring }}" as="br" hint-placeholder-count="3">
+        <div style="display:grid;grid-template-columns:18px 1fr;gap:10px;font-size:15px;line-height:1.45;color:#C7CBC6"><span style="color:#E3B55B">→</span><span>{{ br }}</span></div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<footer data-screen-label="Footer" style="position:relative;padding:40px clamp(20px,4vw,56px) 24px;background:linear-gradient(90deg,#0B0C0E 0%,#15130E 55%,#221B0D 100%);border-top:1px solid rgba(227,181,91,.35)">
+  <div style="display:flex;justify-content:center;align-items:center;gap:clamp(24px,5vw,56px);flex-wrap:wrap">
+    <img src="assets/brands/logo.png" alt="Procar Performance LLC" style="height:64px;width:auto;display:block">
+    <div style="width:1px;align-self:stretch;min-height:64px;background:rgba(227,181,91,.3)"></div>
+    <div style="display:grid;gap:10px">
+      <a href="tel:+10000000000" style="display:flex;align-items:center;gap:10px;color:#EEF0EC;font-size:15px" style-hover="color:#E3B55B"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E3B55B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><rect x="6" y="2" width="12" height="20" rx="2"></rect><path d="M11 18h2"></path></svg><span>(000) 000-0000</span></a>
+      <a href="mailto:info@procarperformance.com" style="display:flex;align-items:center;gap:10px;color:#EEF0EC;font-size:15px" style-hover="color:#E3B55B"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E3B55B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg><span>info@procarperformance.com</span></a>
+      <a href="#" style="display:flex;align-items:center;gap:10px;color:#EEF0EC;font-size:15px" style-hover="color:#E3B55B"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E3B55B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg><span>Ciudad, Estado</span></a>
+    </div>
+  </div>
+  <div style="max-width:1100px;margin:28px auto 0;padding-top:18px;border-top:1px solid rgba(238,240,236,.12);display:flex;justify-content:space-between;align-items:center;gap:12px 24px;flex-wrap:wrap">
+    <span style="font-size:13px;color:#C7CBC6">© 2026 Procar Performance LLC · {{ t.rights }}</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap"><a href="https://www.tiktok.com/@procarperformancellc" style="color:#9AA0A6;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase" style-hover="color:#E3B55B">TikTok</a><a href="https://www.instagram.com/procarperformancellc/" style="color:#9AA0A6;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase" style-hover="color:#E3B55B">Instagram</a><a href="https://www.facebook.com/share/CeCvyw649pjFLPwb/?mibextid=qi2Omg" style="color:#9AA0A6;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase" style-hover="color:#E3B55B">Facebook</a><a href="https://youtube.com/@procarperformancellc" style="color:#9AA0A6;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase" style-hover="color:#E3B55B">YouTube</a></div>
+  </div>
+</footer>
+
+<div style="position:fixed;inset:0;z-index:40;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px)"></div>
+<sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+  <div style="position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:45;display:grid;justify-items:center;gap:10px;pointer-events:none;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#9AA0A6">
+    <div style="writing-mode:vertical-rl">Scroll</div>
+    <div style="position:relative;width:2px;height:140px;background:rgba(238,240,236,.1)"><div ref="{{ progBar }}" style="position:absolute;inset:0;background:#E3B55B;transform-origin:top;transform:scaleY(0);box-shadow:0 0 8px #E3B55B"></div></div>
+    <div ref="{{ progTxt }}" style="color:#E3B55B">000%</div>
+  </div>
+</sc-if>
+<div style="position:fixed;right:20px;bottom:84px;z-index:60;font-family:'JetBrains Mono',monospace;display:flex;flex-direction:column;align-items:flex-end">
+  <sc-if value="{{ langOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:relative;margin-bottom:8px;width:210px;background:rgba(11,12,14,.94);backdrop-filter:blur(12px);border:1px solid rgba(227,181,91,.45);box-shadow:0 20px 40px rgba(0,0,0,.5)">
+      <div style="position:absolute;top:-1px;left:-1px;width:10px;height:10px;border-top:2px solid #E3B55B;border-left:2px solid #E3B55B"></div>
+      <div style="position:absolute;bottom:-1px;right:-1px;width:10px;height:10px;border-bottom:2px solid #E3B55B;border-right:2px solid #E3B55B"></div>
+      <div style="padding:12px 14px;font-size:10px;letter-spacing:.16em;color:#9AA0A6;border-bottom:1px solid rgba(238,240,236,.08)">{{ t.langLbl }}</div>
+      <sc-for list="{{ langs }}" as="l" hint-placeholder-count="2">
+        <sc-if value="{{ l.active }}"><div style="display:flex;justify-content:space-between;align-items:center;padding:14px;font-size:13px;color:#0B0C0E;background:#E3B55B;font-weight:700"><span>{{ l.code }} · {{ l.name }}</span><span>●</span></div></sc-if>
+        <sc-if value="{{ l.inactive }}"><div onClick="{{ l.set }}" style="display:flex;justify-content:space-between;align-items:center;padding:14px;font-size:13px;color:#EEF0EC;cursor:pointer" style-hover="background:rgba(227,181,91,.12)"><span>{{ l.code }} · {{ l.name }}</span><span style="color:#6B7178">○</span></div></sc-if>
+      </sc-for>
+    </div>
+  </sc-if>
+  <div onClick="{{ toggleLang }}" style="display:flex;align-items:center;gap:10px;height:48px;padding:0 16px 0 12px;background:rgba(11,12,14,.9);backdrop-filter:blur(12px);border:1px solid rgba(227,181,91,.5);color:#EEF0EC;cursor:pointer;font-size:12px;letter-spacing:.12em;box-shadow:0 10px 30px rgba(0,0,0,.5)" style-hover="border-color:#E3B55B">
+    <div style="position:relative;width:22px;height:22px;border:1.5px solid #E3B55B;border-radius:50%"><div style="position:absolute;left:50%;top:-1px;bottom:-1px;width:9px;transform:translateX(-50%);border:1.5px solid #E3B55B;border-radius:50%"></div><div style="position:absolute;left:0;right:0;top:50%;height:1.5px;background:#E3B55B"></div></div>
+    <span style="font-weight:700;color:#E3B55B">{{ langCode }}</span><span style="color:#6B7178">▾</span>
+  </div>
+</div>
+<a href="https://wa.me/" style="position:fixed;right:20px;bottom:20px;z-index:60;display:flex;align-items:center;gap:10px;background:#25D366;color:#0B0C0E;padding:14px 18px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.06em;box-shadow:0 10px 30px rgba(0,0,0,.5)" style-hover="background:#EEF0EC;color:#0B0C0E">
+  <div style="width:8px;height:8px;border-radius:50%;background:#0B0C0E"></div>WhatsApp
+</a>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;es&quot;,&quot;en&quot;],&quot;default&quot;:&quot;es&quot;,&quot;tsType&quot;:&quot;'es'|'en'&quot;}}">
+const BRAND_FILES=[['Mercedes-Benz','Mercedes-benz'],['Audi','audi'],['BMW','bmw'],['Volkswagen','Volvo'],['Maserati','Maserati'],['Mini Cooper','mini-cooper'],['Volvo','Volvo1'],['Jaguar','jaguar'],['Bugatti','bugatti'],['Bentley','bentley'],['Aston Martin','aston'],['Porsche','porshe'],['Ferrari','ferari'],['Land Rover','land-rover'],['Lamborghini','lamborgini']];
+const IM=p=>(window.PROCAR_IMG&&window.PROCAR_IMG[p])||p;
+const IMGS=['assets/img/module.webp','assets/img/SERVice-2.webp','assets/img/VIP.webp','assets/img/teliphone-advice.jpg','assets/img/project.webp'];
+const PRICES=[['$250',true],['$250',true],['$450',false],['$100',false],['$20',true]];
+const NODE_POS=[['ECM',[-1.85,0.15,0]],['TCM',[-0.95,-0.22,0.28]],['ABS',[-1.45,-0.18,-0.8]],['EPS',[-1.2,0.1,0.75]],['AIRBAG',[-0.35,0.62,0.35]],['BCM',[0.95,0.35,-0.3]],['CAN GW',[0,0.02,0],true]];
+const REVIEWS=[
+ ['Andy Machado','Super satisfecho y agradecido con el magnífico servicio brindado. Muy profesional y con muy altos conocimientos en diagnóstico y reparaciones, donde en otros talleres no pudieron solucionar este señor con muchísima profesionalidad y un trato inigualable logró reparar la falla del auto.'],
+ ['Rebeca Benet','We went through 2 mechanic to fix our Food Truck before we find you. I wish we found you guys way before. Totally recommend it. Quick, fast and a great job. Thank you.'],
+ ['Caridad Rivero','Si necesitas un taller especializado en problemas eléctricos y electrónicos este es el lugar donde va a terminar tu pesadilla, 200% recomendado.'],
+ ['Ana Diana Perez Leon','Yoel cuenta con amplio conocimiento detectando el problema del auto con apenas mirarlo. Nos ofreció diferentes opciones desde la más económica hasta la más cara. El servicio fue súper rápido y el carro quedó como nuevo.'],
+ ['E&M Importer','Muchísimas gracias, me salvaron de quedarme a pie. Gracias, gracias.'],
+ ['Dayvel Alvarez','Realmente saben lo que hacen, el carro quedó muy bueno. Recomendado 100%.']];
+const T={
+es:{langLbl:'Idioma',stepWord:'Paso',scanWord:'Escaneando',cta5v:'Agenda tu diagnóstico',cta5vSub:'Medimos antes de cambiar. Garantía de devolución en piezas diagnosticadas.',ctaNet:'Agendar programación',ctaBrands:'Agenda tu cita',ctaProc:'Empezar ahora',procLead:'Un buen diagnóstico no es conectar el escáner y cambiar la pieza que marca. Se trata de reunir información, hacer pruebas y confirmar antes de reparar.',totKicker:'Esto o aquello',totTitle:'Yoel responde sin pensarlo.',totSub:'Toca cada tarjeta para ver la respuesta.',totTap:'Ver respuesta',totClose:'Cambiar una pieza es fácil. Saber cuál es la que hay que cambiar es la parte difícil.',tot:[['Reparar','Reemplazar','Depende: si admite ambas, se pueden hacer las dos.','both'],['Original','Aftermarket','Depende del carro y la marca.','both'],['Escáner','Multímetro','Los dos.','both'],['Mecánica','Electrónica','Electrónica.','b'],['Borrar el código','Buscar la causa','Buscar la causa. 100%.','b'],['Cambiar la pieza','Diagnosticar primero','Diagnosticar primero. Eso no se piensa.','b'],['Barato','Bien hecho','Bien hecho.','b'],['Carro nuevo','Carro viejo','El que esté bien mantenido.','none']],stepCodes:['SÍNTOMAS','RESERVA','ENTREGA','PRUEBAS','APROBACIÓN'],wheelHud:['Escaneo completo · 7 módulos','Lectura ECU · OK','Red CAN · 500 kb/s'],navTech:'Tecnología',navServices:'Servicios',navAbout:'Quiénes somos',navProcess:'Proceso',navReviews:'Reseñas',navBook:'Agendar cita',
+ heroKicker:'Diagnóstico electrónico · Programación de módulos',heroA:'Encuentra',heroB:'la falla.',
+ heroSub:'Soluciones expertas para vehículos que no arrancan y programación automotriz de precisión. Encontramos la falla antes de cambiar una sola pieza.',
+ ctaBook:'Agendar cita',ctaUrg:'Urgencia · $450',drag:'Arrastra para girar',
+ stats:[['17','Años de experiencia'],['+90%','Marcas y modelos programados'],['5.0','Calificación en Google'],['50','Reseñas de clientes']],
+ splitA:'No cambiamos',splitB:'piezas al azar',otherShops:'Lo que pasa en otros talleres',
+ story:['“Hay que cambiar la computadora.”','Pagas la computadora nueva y la cambias.','El carro sigue sin prender.'],
+ atProcar:'En Procar',manifesto:'Con nuestros 17 años de experiencia, primero encontramos el problema y después hablamos de lo que tenemos que cambiar.',stopGuessing:'Encuentra la falla',
+ v5Kicker:'La prueba de los 5 voltios',v5Title:'Uno de nuestros 10 pasos para despertar un carro que no prende.',
+ v5Lead:'Puede ser algo tan sencillo como medir 5 voltios. Mueve la sonda y mira lo que ve nuestro técnico.',v5Probe:'Sonda · voltaje de referencia',
+ vOk:['La computadora está viva.','Con 5 voltios de referencia, el módulo responde. Seguimos con el siguiente paso del diagnóstico.'],
+ vWarn:['Voltaje fuera de lo normal.','Seguimos todas las pruebas hasta encontrar de dónde viene la falla.'],
+ vDead:['0 voltios.','Lo primero: checar la alimentación — negativo, positivo y red CAN bus.'],
+ chk:['Negativo (masa)','Positivo (alimentación)','Red CAN bus','Referencia 5 V'],chkRev:'REVISAR',chkAnom:'ANOMALÍA',
+ v5Quote:'Sin hacer estas pruebas, alguien pudiera decirte que hay que cambiar la computadora. Tú la pagas, la cambias… y el carro sigue sin prender.',
+ netKicker:'Sistema nervioso',netTitle:'Cuidamos el sistema nervioso de tu auto.',netSub:'Fallas eléctricas críticas, carros que no arrancan y programaciones. Toca un módulo para ver qué hacemos.',
+ nodes:['Computadora de motor','Unidad de control de la transmisión','Unidad de control de frenos','Dirección asistida','Bolsas de aire','Módulo de carrocería','Red CAN bus: comunica todos los módulos'],
+ servicesTitle:'Servicios',servicesSub:'Todos se reservan online y el pago garantiza tu cupo. Reparamos todo tipo de marcas y modelos.',
+ from:'A partir de',fixed:'Precio',priority:'Prioridad · mismo día',nonRefund:'Una vez realizada la reserva el dinero no es reembolsable.',
+ compareTitle:'Compara servicios',compareHint:'Toca un servicio para ver el detalle',service:'Servicio',
+ rows:['Precio','Atención el mismo día','Trabajo presencial en taller','Devolución del costo de piezas diagnosticadas','Monto se aplica al invoice final','Traer todas las llaves','Duración'],remote:'Remoto',digital:'Digital',min30:'30 min máx.',
+ brandsKicker:'Marcas',brandsTitle:'Principales marcas europeas que trabajamos:',brandsMore:'Y mucho más…',allBrands:'Trabajamos con todas las marcas',
+ exp:'Exp.',years:'años',focus:'Foco',focusV:'Fallas eléctricas',
+ aboutTitle:'Llevamos la electromecánica a otro nivel.',
+ aboutP1:'Mi nombre es Yoel Rodríguez, CEO de Procar Performance LLC. La pasión de mi equipo y yo es llevar el mundo de la electromecánica a otro nivel, con servicios efectivos y post venta minuciosa. Nuestra especialidad son las FALLAS ELÉCTRICAS críticas, carros que NO ARRANCAN y PROGRAMACIONES.',
+ aboutP2:'Contamos con los equipos más modernos para realizar estos trabajos. Trabajamos con todas las marcas y nuestra especialidad son las marcas europeas.',
+ promises:[['No gastes en piezas que no necesitas','Un diagnóstico certero y preciso antes de cambiar nada.'],['Las mejores manos de la región','La confianza de dejar tu auto con especialistas.'],['Sistema de citas, taller organizado','Atendido como mereces y con el tiempo que necesitas. Tu auto es la prioridad.']],
+ processTitle:'Así funciona tu cita.',
+ steps:[['Cuéntanos los síntomas','Tú eres quien más tiempo pasa en tu carro: cuándo falla, a qué temperatura, en qué momento.'],['Reserva tu cupo','Agenda en el calendario. El pago garantiza tu espacio.'],['Trae tu vehículo','El día de la cita, con todas las llaves que tenga.'],['Pruebas y mediciones','Osciloscopio, multímetro y puntas de prueba para saber exactamente qué pieza está dañada. Te enviamos el estimado.'],['Autorizas y reparamos','Solo con tu aprobación. Lo pagado se aplica al invoice final.']],
+ guaranteeTag:'GARANTÍA',guarantee:'Garantizamos la devolución del dinero del costo de las piezas diagnosticadas en caso de no ser la solución de la falla.',
+ reviewsCount:'50 reseñas de Google',writeReview:'Escribir reseña',
+ bookA:'Descubre',bookB:'lo que tiene tu carro.',bookSub:'Agenda tu cita y deja tu auto en manos de especialistas en diagnóstico electrónico.',
+ step1:'1 · Selecciona el servicio',step2:'2 · Elige fecha y hora',embedNote:'Pega aquí el código del calendario de GHL para este servicio',
+ waTitle:'¿Dudas? Escríbenos',waSub:'Cuéntanos marca, año, modelo y qué le pasa a tu carro.',waCta:'Abrir WhatsApp',
+ bringTitle:'Antes de venir',bring:['Traer todas las llaves que tenga el vehículo.','Esto no es una cita de mecánica: es diagnóstico eléctrico y electrónico.','Una vez realizada la reserva el dinero no es reembolsable.'],
+ rights:'Reservados todos los derechos',footTag:'Fallas eléctricas · Carros que no arrancan · Programación',
+ svc:[
+  {name:'Programación de módulos',short:'Programación',tag:'ECM · ECU · BCM · ABS · EPS · AIRBAG · TCM',cta:'Agendar cita',desc:'Para todo aquel que necesite específicamente la programación de módulos: computadora de motor (ECM), otras unidades de control del motor (ECU), módulo de carrocería (BCM), unidades de control de freno (ABS y EPS), bolsas de aire (AIRBAG), unidad de control de la transmisión (TCM), etc. Hacemos programaciones en más del 90% de marcas y modelos actualmente en el mercado.',notes:['ATENCIÓN: Traer todas las llaves que tenga el vehículo.']},
+  {name:'Revisión general (diagnóstico)',short:'Diagnóstico',tag:'Revisión a fondo · Todas las marcas',cta:'Agendar cita',desc:'El vehículo debe ser dejado el día de la cita. Una vez realizado el diagnóstico y encontrada la falla, se le notificará al propietario con un estimado del costo de la reparación para que dé su autorización. Garantizamos la devolución del dinero del costo de las piezas diagnosticadas en caso de no ser la solución de la falla.',notes:['ATENCIÓN: Esto no es una cita de mecánica. Traer todas las llaves que tenga el vehículo.','Con este servicio garantizas el cupo para que tu auto sea revisado a fondo; el monto pagado será considerado en el invoice final.']},
+  {name:'Revisión de URGENCIA',short:'Urgencia',tag:'Sin esperas · Atención prioritaria',cta:'Agendar urgencia',urgent:true,desc:'Será atendido con prioridad sin necesidad de esperas. Esto no garantiza que el vehículo salga el mismo día, pero sí será atendido el mismo día. Garantizamos la devolución del dinero del costo de las piezas diagnosticadas en caso de no ser la solución de la falla.',notes:['ATENCIÓN: Esto NO es una cita mecánica. Por favor traer todas las llaves que tenga el vehículo.','El monto pagado será considerado en la factura final.']},
+  {name:'Asesoría telefónica',short:'Asesoría',tag:'Remoto · Máx. 30 minutos',cta:'Agendar llamada',desc:'Si estás lejos de nuestro taller y deseas que te orientemos en cada paso de lo que debes hacer para arreglar tu carro, este es el servicio que necesitas. No garantiza que el vehículo se arregle, ya que no se realiza el trabajo presencial ni con los equipos necesarios. Duración máxima de 30 minutos.',notes:['ATENCIÓN: Si tras dos intentos no hemos conseguido contactar con usted, la llamada no será reembolsada.']},
+  {name:'Manuales y diagramas eléctricos',short:'Manuales',tag:'Información técnica · Sin suscripciones',cta:'Solicitar manuales',desc:'Si necesitas algún manual o diagrama eléctrico, te facilitamos esta información técnica para facilitar tu trabajo sin la necesidad de pagar anualidades y suscripciones.',notes:[]}]},
+en:{langLbl:'Language',stepWord:'Step',scanWord:'Scanning',cta5v:'Book your diagnosis',cta5vSub:'We measure before we replace. Refund guarantee on diagnosed parts.',ctaNet:'Book programming',ctaBrands:'Book now',ctaProc:'Start now',procLead:'A good diagnosis isn’t plugging in a scanner and replacing whatever part it flags. It’s gathering information, testing and confirming before repairing.',totKicker:'This or that',totTitle:'Yoel answers without thinking twice.',totSub:'Tap each card to see the answer.',totTap:'See answer',totClose:'Replacing a part is easy. Knowing which part needs replacing is the hard part.',tot:[['Repair','Replace','Depends: if it allows both, both can be done.','both'],['OEM','Aftermarket','Depends on the car and the brand.','both'],['Scanner','Multimeter','Both.','both'],['Mechanical','Electronic','Electronic.','b'],['Clear the code','Find the cause','Find the cause. 100%.','b'],['Swap the part','Diagnose first','Diagnose first. No-brainer.','b'],['Cheap','Done right','Done right.','b'],['New car','Old car','Whichever is well maintained.','none']],stepCodes:['SYMPTOMS','BOOKING','DROP-OFF','TESTING','APPROVAL'],wheelHud:['Full scan · 7 modules','ECU read · OK','CAN bus · 500 kb/s'],navTech:'Technology',navServices:'Services',navAbout:'About us',navProcess:'Process',navReviews:'Reviews',navBook:'Book now',
+ heroKicker:'Electronic diagnosis · Module programming',heroA:'Find',heroB:'the fault.',
+ heroSub:'Expert solutions for vehicles that won’t start and precision automotive programming. We find the fault before replacing a single part.',
+ ctaBook:'Book appointment',ctaUrg:'Urgent · $450',drag:'Drag to rotate',
+ stats:[['17','Years of experience'],['+90%','Makes & models programmed'],['5.0','Google rating'],['50','Customer reviews']],
+ splitA:'We don’t swap',splitB:'parts at random',otherShops:'What happens at other shops',
+ story:['“You need a new computer.”','You pay for the new computer and replace it.','The car still won’t start.'],
+ atProcar:'At Procar',manifesto:'With 17 years of experience, we find the problem first — then we talk about what needs replacing.',stopGuessing:'Find the fault',
+ v5Kicker:'The 5-volt test',v5Title:'One of our 10 steps to wake up a car that won’t start.',
+ v5Lead:'It can be as simple as measuring 5 volts. Move the probe and see what our technician sees.',v5Probe:'Probe · reference voltage',
+ vOk:['The computer is alive.','With a 5-volt reference, the module responds. On to the next diagnostic step.'],
+ vWarn:['Abnormal voltage.','We run every test until we find where the fault comes from.'],
+ vDead:['0 volts.','First: check the supply — ground, positive and CAN bus network.'],
+ chk:['Ground (negative)','Positive (supply)','CAN bus network','5 V reference'],chkRev:'CHECK',chkAnom:'ANOMALY',
+ v5Quote:'Without these tests, someone could tell you the computer needs replacing. You pay for it, swap it… and the car still won’t start.',
+ netKicker:'Nervous system',netTitle:'We look after your car’s nervous system.',netSub:'Critical electrical faults, no-start vehicles and programming. Tap a module to see what we do.',
+ nodes:['Engine computer','Transmission control unit','Brake control unit','Electric power steering','Airbags','Body control module','CAN bus: connects every module'],
+ servicesTitle:'Services',servicesSub:'All booked online — payment secures your slot. We repair all makes and models.',
+ from:'Starting at',fixed:'Price',priority:'Priority · same day',nonRefund:'Once booked, payment is non-refundable.',
+ compareTitle:'Compare services',compareHint:'Tap a service to see details',service:'Service',
+ rows:['Price','Same-day attention','In-shop work','Refund of diagnosed parts cost','Amount applied to final invoice','Bring all keys','Duration'],remote:'Remote',digital:'Digital',min30:'30 min max',
+ brandsKicker:'Brands',brandsTitle:'Main European brands we work on:',brandsMore:'And much more…',allBrands:'We work on all makes',
+ exp:'Exp.',years:'years',focus:'Focus',focusV:'Electrical faults',
+ aboutTitle:'Taking electromechanics to another level.',
+ aboutP1:'My name is Yoel Rodríguez, CEO of Procar Performance LLC. My team’s passion is taking electromechanics to another level, with effective service and thorough after-sales care. We specialize in critical ELECTRICAL FAULTS, cars that WON’T START, and PROGRAMMING.',
+ aboutP2:'We have the most modern equipment for this work. We work on all makes and specialize in European brands.',
+ promises:[['Stop paying for parts you don’t need','An accurate, precise diagnosis before anything is replaced.'],['The best hands in the region','The confidence of leaving your car with specialists.'],['Appointments, organized shop','The attention and time you deserve. Your car is the priority.']],
+ processTitle:'How your appointment works.',
+ steps:[['Tell us the symptoms','You spend the most time in your car: when it fails, at what temperature, at what moment.'],['Book your slot','Pick a time on the calendar. Payment secures your spot.'],['Bring your vehicle','On your appointment day, with all its keys.'],['Tests & measurements','Oscilloscope, multimeter and test probes to know exactly which part is damaged. We send you the estimate.'],['You approve, we repair','Only with your approval. What you paid goes toward the final invoice.']],
+ guaranteeTag:'GUARANTEE',guarantee:'We guarantee a refund of the cost of diagnosed parts if they don’t turn out to be the solution to the fault.',
+ reviewsCount:'50 Google reviews',writeReview:'Write a review',
+ bookA:'Find out',bookB:'what’s wrong with your car.',bookSub:'Book your appointment and leave your car with electronic diagnosis specialists.',
+ step1:'1 · Select the service',step2:'2 · Pick date and time',embedNote:'Paste the GHL calendar embed code for this service here',
+ waTitle:'Questions? Message us',waSub:'Tell us make, year, model and what’s happening with your car.',waCta:'Open WhatsApp',
+ bringTitle:'Before you come',bring:['Bring all the keys the vehicle has.','This is not a mechanical appointment: it’s electrical and electronic diagnosis.','Once booked, payment is non-refundable.'],
+ rights:'All rights reserved',footTag:'Electrical faults · No-start vehicles · Programming',
+ svc:[
+  {name:'Module programming',short:'Programming',tag:'ECM · ECU · BCM · ABS · EPS · AIRBAG · TCM',cta:'Book appointment',desc:'For anyone who specifically needs module programming: engine computer (ECM), other engine control units (ECU), body control module (BCM), brake control units (ABS and EPS), airbags (AIRBAG), transmission control unit (TCM), etc. We program over 90% of makes and models currently on the market.',notes:['NOTE: Bring all the keys the vehicle has.']},
+  {name:'General inspection (diagnosis)',short:'Diagnosis',tag:'In-depth check · All makes',cta:'Book appointment',desc:'The vehicle must be dropped off on the appointment day. Once the diagnosis is done and the fault found, the owner receives an estimate of the repair cost to authorize it. We guarantee a refund of the cost of diagnosed parts if they don’t solve the fault.',notes:['NOTE: This is not a mechanical appointment. Bring all the keys the vehicle has.','This service secures your slot for a thorough inspection; the amount paid is applied to the final invoice.']},
+  {name:'URGENT inspection',short:'Urgent',tag:'No waiting · Priority attention',cta:'Book urgent',urgent:true,desc:'You’ll be seen with priority, no waiting. This doesn’t guarantee the vehicle leaves the same day, but it will be attended the same day. We guarantee a refund of the cost of diagnosed parts if they don’t solve the fault.',notes:['NOTE: This is NOT a mechanical appointment. Please bring all the keys the vehicle has.','The amount paid is applied to the final invoice.']},
+  {name:'Phone consultation',short:'Phone advice',tag:'Remote · 30 minutes max',cta:'Book call',desc:'If you’re far from our shop and want step-by-step guidance on fixing your car, this is the service for you. It doesn’t guarantee the vehicle gets fixed, since the work isn’t done in person or with the required equipment. Maximum 30 minutes.',notes:['NOTE: If we can’t reach you after two attempts, the call won’t be refunded.']},
+  {name:'Manuals & wiring diagrams',short:'Manuals',tag:'Technical info · No subscriptions',cta:'Request manuals',desc:'Need a manual or wiring diagram? We provide the technical information to make your job easier, without annual fees or subscriptions.',notes:[]}]}
+};
+
+class Component extends DCLogic {
+  chipRef=React.createRef();chip2Ref=React.createRef();netRef=React.createRef();labelsRef=React.createRef();
+  splitRef=React.createRef();splitA=React.createRef();splitB=React.createRef();
+  procRef=React.createRef();procLine=React.createRef();progBar=React.createRef();progTxt=React.createRef();floorRef=React.createRef();
+  state={lang:null,sel:0,bookSel:0,volts:5,node:-1,wide:true,menuOpen:false,langOpen:false,rev:{}};
+
+  componentDidMount(){
+    this.onResize=()=>this.setState({wide:window.innerWidth>=980});this.onResize();
+    window.addEventListener('resize',this.onResize);
+    let ticking=false;
+    this.onScroll=()=>{if(ticking)return;ticking=true;requestAnimationFrame(()=>{ticking=false;this.parallax();});};
+    window.addEventListener('scroll',this.onScroll,{passive:true});this.parallax();
+    this.io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='none';this.io.unobserve(e.target);}}),{threshold:.15});
+    setTimeout(()=>document.querySelectorAll('[data-reveal]').forEach(el=>{const r=el.getBoundingClientRect();if(r.top>innerHeight){el.style.opacity='0';el.style.transform='translateY(40px)';el.style.transition='opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1)';this.io.observe(el);}}),50);
+    const init=()=>{
+      if(!window.THREE||!window.Procar3D){this.poll=setTimeout(init,100);return;}
+      if(this.chipRef.current)this.chip=Procar3D.car(this.chipRef.current);
+      if(this.chip2Ref.current)this.chip2=Procar3D.chip(this.chip2Ref.current,{volts:this.state.volts});
+      if(this.netRef.current)this.net=Procar3D.network(this.netRef.current,{labelsEl:this.labelsRef.current,nodes:NODE_POS.map(([name,p,hub])=>({name,p,hub})),onHover:i=>this.setState({node:i})});
+    };
+    init();
+  }
+  componentWillUnmount(){clearTimeout(this.poll);window.removeEventListener('resize',this.onResize);window.removeEventListener('scroll',this.onScroll);this.io&&this.io.disconnect();[this.chip,this.chip2,this.net].forEach(x=>x&&x.dispose());}
+
+  parallax(){
+    const vh=innerHeight;
+    document.querySelectorAll('[data-speed]').forEach(el=>{const sp=parseFloat(el.getAttribute('data-speed'))||0;const r=el.getBoundingClientRect();const prev=el._py||0;const c=(r.top-prev)+r.height/2-vh/2;const y=-c*sp;el._py=y;el.style.transform=`translate3d(0,${y.toFixed(1)}px,0)`;});
+    const s=this.splitRef.current;
+    if(s){const r=s.getBoundingClientRect();const p=Math.max(0,Math.min(1,(vh-r.top)/(vh+r.height)));const d=(p-0.5)*28;
+      if(this.splitA.current)this.splitA.current.style.transform=`translate3d(${d}vw,0,0)`;
+      if(this.splitB.current)this.splitB.current.style.transform=`translate3d(${-d}vw,0,0)`;}
+    if(this.chip)this.chip.setScroll(scrollY/vh);
+    const pc=this.procRef.current;if(pc){const r=pc.getBoundingClientRect();const p=Math.max(0,Math.min(1,(vh*0.75-r.top)/(r.height*0.9)));if(this.procLine.current)this.procLine.current.style.transform='scaleX('+p.toFixed(3)+')';
+      pc.querySelectorAll('[data-step]').forEach((el,i)=>{const on=p>=(i+0.3)/5;el.style.opacity=on?'1':'.35';const nd=el.querySelector('[data-node]');if(nd)nd.style.boxShadow=on?'0 0 0 4px rgba(227,181,91,.15),0 0 28px rgba(227,181,91,.45)':'none';});}
+    const max=document.documentElement.scrollHeight-vh;const pr=max>0?scrollY/max:0;
+    if(this.progBar.current)this.progBar.current.style.transform=`scaleY(${pr.toFixed(3)})`;
+    if(this.progTxt.current)this.progTxt.current.textContent=String(Math.round(pr*100)).padStart(3,'0')+'%';
+    if(this.floorRef.current)this.floorRef.current.style.backgroundPosition=`0 ${(scrollY*0.6).toFixed(0)}px`;
+  }
+
+  setVolts(v){this.setState({volts:v});this.chip2&&this.chip2.setVolts(v);}
+
+  renderVals(){
+    const lang=this.state.lang||this.props.lang||'es',t=T[lang];
+    const narrow=!this.state.wide;
+    const book=i=>()=>this.setState({bookSel:i,sel:i});
+    const services=t.svc.map((s,i)=>({...s,num:'0'+(i+1),price:PRICES[i][0],img:IM(IMGS[i]),active:i===this.state.sel,inactive:i!==this.state.sel,select:()=>this.setState({sel:i}),book:book(i)}));
+    const cur={...services[this.state.sel],fromLbl:PRICES[this.state.sel][1]?t.from:t.fixed};
+    const Y={yes:true},N={no:true},X=text=>({isText:true,text});
+    const compareRows=[[X('$250+'),X('$250+'),X('$450'),X('$100'),X('$20+')],[N,N,Y,N,N],[Y,Y,Y,X(t.remote),X(t.digital)],[N,Y,Y,N,N],[N,Y,Y,N,N],[Y,Y,Y,N,N],[N,N,N,X(t.min30),N]].map((cells,i)=>({label:t.rows[i],cells}));
+    const v=this.state.volts,dead=v<=0.2,ok=v>=4.8;
+    const CY='#E3B55B',AM='#FFB23E',RD='#FF4D2E';
+    const vColor=dead?RD:ok?CY:AM;const [vTitle,vBody]=dead?t.vDead:ok?t.vOk:t.vWarn;
+    const st=(k)=>dead?[t.chkRev,RD]:ok?['OK',CY]:(k===2?[t.chkAnom,AM]:['OK',CY]);
+    const checks=t.chk.map((label,k)=>{const [status,color]=k===3?[v.toFixed(2)+' V',vColor]:st(k);return{label,status,color};});
+    const node=this.state.node;
+    return{
+      t,wide:!narrow,narrow,menuOpen:narrow&&this.state.menuOpen,
+      toggleMenu:()=>this.setState(s=>({menuOpen:!s.menuOpen})),closeMenu:()=>this.setState({menuOpen:false}),
+      langs:[['es','Español'],['en','English']].map(([c,name])=>({code:c.toUpperCase(),name,active:c===lang,inactive:c!==lang,set:()=>this.setState({lang:c,langOpen:false})})),
+      langCode:lang.toUpperCase(),langOpen:this.state.langOpen,langClosed:!this.state.langOpen,
+      toggleLang:()=>this.setState(s=>({langOpen:!s.langOpen})),
+      procRef:this.procRef,procLine:this.procLine,progBar:this.progBar,tot:t.tot.map(([A,B,ans,w],i)=>{const open=!!this.state.rev[i];const o=(txt,win)=>({text:txt,hi:open&&win,lo:open&&!win,neu:!open});const wa=w==='both'||w==='none'?w==='both':false,wb=w==='both'||w==='b';const na=w==='none';return{n:String(i+1).padStart(2,'0'),ans,open,closed:!open,toggle:()=>this.setState(s=>({rev:{...s.rev,[i]:!s.rev[i]}})),opts:[na?{text:A,neu:true}:o(A,wa),{vs:true},na?{text:B,neu:true}:o(B,wb)]};}),progTxt:this.progTxt,floorRef:this.floorRef,
+      bookUrgent:()=>this.setState({sel:2,bookSel:2}),bookProg:()=>this.setState({sel:0,bookSel:0}),bookDiag:()=>this.setState({sel:1,bookSel:1}),
+      chipRef:this.chipRef,chip2Ref:this.chip2Ref,netRef:this.netRef,labelsRef:this.labelsRef,splitRef:this.splitRef,splitA:this.splitA,splitB:this.splitB,
+      pickUrgent:()=>this.setState({sel:2,bookSel:2}),
+      stats:t.stats.map(([v,l])=>({v,l})),
+      volts:v,vText:v.toFixed(2),vColor,vTitle,vBody,vCode:dead?'NO POWER':ok?'ALIVE':'FAULT',checks,
+      onVolts:e=>this.setVolts(parseFloat(e.target.value)),
+      presets:[['0 V',0],['2.7 V',2.7],['5 V',5]].map(([label,val])=>({label,set:()=>this.setVolts(val)})),
+      nodes:NODE_POS.map(([code],i)=>({code,desc:t.nodes[i],on:node===i,off:node!==i,enter:()=>{this.setState({node:i});this.net&&this.net.setHover(i);},leave:()=>{this.setState({node:-1});this.net&&this.net.setHover(-1);}})),
+      services,cur,compareRows,
+      brands:BRAND_FILES.map(([name,f])=>({name,src:IM('assets/brands/'+f+'.png')})),
+      promises:t.promises.map(([title,body],i)=>({n:'0'+(i+1),title,body})),
+      steps:t.steps.map(([title,body],i)=>({n:'0'+(i+1),title,body,code:t.stepCodes[i]})),
+      reviews:REVIEWS.map(([name,text])=>({name,text,initial:name[0]})),
+      bookChips:services.map((s,i)=>({short:s.short,price:s.price,active:i===this.state.bookSel,inactive:i!==this.state.bookSel,book:book(i)})),
+      bookCur:services[this.state.bookSel]
+    };
+  }
+}
+</script>
+</body>
+</html>

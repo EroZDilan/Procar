@@ -1,0 +1,402 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { T, BRAND_FILES, PRICES, NODE_POS, REVIEWS } from '../data/content.js';
+import { GHL_CALENDARS, CONTACT, SOCIAL, REVIEW_URL, waLink } from '../config.js';
+import logo from '../assets/brands/logo.png';
+import imgModule from '../assets/img/module.webp';
+import imgService2 from '../assets/img/SERVice-2.webp';
+import imgVip from '../assets/img/VIP.webp';
+import imgPhone from '../assets/img/teliphone-advice.jpg';
+import imgProject from '../assets/img/project.webp';
+import imgCar from '../assets/img/car.webp';
+import imgAbout from '../assets/img/about.webp';
+
+interface Props { lang: 'es' | 'en' }
+const { lang } = Astro.props;
+const t = T[lang];
+
+const brandImgs = import.meta.glob<{ default: ImageMetadata }>('../assets/brands/*.png', { eager: true });
+const brandSrc = (f: string) => brandImgs[`../assets/brands/${f}.png`].default;
+
+const SVC_IMGS = [imgModule, imgService2, imgVip, imgPhone, imgProject];
+const services = t.svc.map((s: any, i: number) => ({
+  ...s,
+  num: '0' + (i + 1),
+  price: PRICES[i][0],
+  fromLbl: PRICES[i][1] ? t.from : t.fixed,
+  img: SVC_IMGS[i],
+  href: GHL_CALENDARS[i] || '#agendar',
+  external: !!GHL_CALENDARS[i],
+}));
+
+const pad2 = (n: number) => String(n).padStart(2, '0');
+// Ganador de cada tarjeta "Esto o aquello": 'both' | 'b' | 'none'
+const tot = t.tot.map(([a, b, ans, w]: string[], i: number) => ({
+  n: pad2(i + 1), a, b, ans,
+  aWin: w === 'both', bWin: w === 'both' || w === 'b', neutral: w === 'none',
+}));
+
+// Textos que el script del cliente necesita para la prueba de 5 V
+const v5Strings = JSON.stringify({ ok: t.vOk, warn: t.vWarn, dead: t.vDead, rev: t.chkRev, anom: t.chkAnom });
+const nodes = NODE_POS.map(([name, p, hub]: any) => ({ name, p, hub: !!hub }));
+const langHref = { es: '/', en: '/en/' };
+const ext = (on: boolean) => (on ? { target: '_blank', rel: 'noopener' } : {});
+---
+<Base
+  lang={lang}
+  title={lang === 'es' ? 'Procar Performance · Diagnóstico electrónico automotriz' : 'Procar Performance · Automotive electronic diagnosis'}
+  description={t.heroSub}
+>
+  <header class="topbar" id="topbar">
+    <nav class="nav" aria-label={lang === 'es' ? 'Principal' : 'Main'}>
+      <a href="#inicio" class="nav__logo"><Picture src={logo} alt="Procar Performance LLC" formats={['avif', 'webp']} height={40} loading="eager" fetchpriority="high" /></a>
+      <div class="nav__links">
+        <a href="#tecnologia">{t.navTech}</a>
+        <a href="#servicios">{t.navServices}</a>
+        <a href="#nosotros">{t.navAbout}</a>
+        <a href="#resenas">{t.navReviews}</a>
+        <a href="#agendar" class="nav__book">{t.navBook}</a>
+      </div>
+      <button class="burger" id="burger" aria-expanded="false" aria-controls="mmenu" aria-label="Menu"><span></span><span></span></button>
+    </nav>
+    <div class="mmenu" id="mmenu">
+      <a href="#tecnologia">{t.navTech}</a>
+      <a href="#servicios">{t.navServices}</a>
+      <a href="#nosotros">{t.navAbout}</a>
+      <a href="#resenas">{t.navReviews}</a>
+      <a href="#agendar" class="mmenu__book">{t.navBook} →</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="inicio" class="hero">
+      <div class="hero__floor-wrap" aria-hidden="true"><div class="hero__floor" id="floor"></div></div>
+      <div class="hero__grid-bg" data-speed="0.25" aria-hidden="true"></div>
+      <div class="hero__main">
+        <div class="hero__copy" data-speed="-0.12">
+          <div class="hero__kicker"><i class="dot"></i>{t.heroKicker}</div>
+          <h1><span>{t.heroA}</span> <span class="outline-w">{t.heroB}</span></h1>
+          <p class="hero__sub">{t.heroSub}</p>
+          <div class="hero__ctas">
+            <a href="#agendar" class="btn">{t.ctaBook} →</a>
+            <a href="#servicios" class="btn btn--urgent" data-pick="2">{t.ctaUrg}</a>
+          </div>
+        </div>
+        <div class="hero__3d" data-speed="0.08">
+          <canvas class="c3d" data-3d="car" aria-label={lang === 'es' ? 'Auto 3D con rayos X' : '3D X-ray car'} role="img"></canvas>
+          <div class="hero__hud" aria-hidden="true">{t.wheelHud.map((h: string) => <div>{h}</div>)}</div>
+          <div class="hero__scanline" aria-hidden="true"></div>
+          <div class="hero__scanword" aria-hidden="true">{t.scanWord}</div>
+          <div class="drag-hint" aria-hidden="true">↻ {t.drag}</div>
+        </div>
+      </div>
+      <div class="stats">
+        {t.stats.map(([v, l]: string[]) => <div><b>{v}</b><span>{l}</span></div>)}
+      </div>
+    </section>
+
+    <section class="split" id="split" aria-label={`${t.splitA} ${t.splitB}`}>
+      <div class="split__line split__a" id="splitA" aria-hidden="true">{t.splitA}</div>
+      <div class="split__line split__b outline-g glow-text" id="splitB" aria-hidden="true">{t.splitB}</div>
+      <div class="split__body">
+        <ol class="story" data-reveal>
+          <li class="story__head label" style="display:block">✕ {t.otherShops}</li>
+          {t.story.map((s: string, i: number) => <li><span>{i}</span><span>{s}</span></li>)}
+        </ol>
+        <div data-reveal>
+          <div class="label" style="color:var(--gold)">✓ {t.atProcar}</div>
+          <p class="manifesto">{t.manifesto}</p>
+          <a href="#agendar" class="link-cta">{t.stopGuessing} →</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="tecnologia" class="sec sec--alt">
+      <div class="sec-head">
+        <div>
+          <div class="kicker">01 — {t.v5Kicker}</div>
+          <h2 class="h2" data-reveal style="font-size:clamp(44px,6.4vw,110px)">{t.v5Title}</h2>
+        </div>
+        <p class="lead" style="max-width:380px">{t.v5Lead}</p>
+      </div>
+      <div class="v5-grid" id="v5" data-vstate="ok" data-strings={v5Strings}>
+        <div class="hud v5-stage"><i class="hc"></i>
+          <canvas class="c3d" data-3d="chip" role="img" aria-label="Chip ECM 3D"></canvas>
+          <div class="label corner-l">Diagnóstico · ECM</div>
+          <div class="label corner-r vcolor">● <span id="vCode">ALIVE</span></div>
+        </div>
+        <div class="hud v5-panel"><i class="hc"></i>
+          <div class="v5-panel__top">
+            <label for="vRange" class="label" style="color:var(--muted)">{t.v5Probe}</label>
+            <div class="v5-read"><output id="vOut" for="vRange" class="vcolor">5.00</output><span>V</span></div>
+            <input id="vRange" class="v5-range" type="range" min="0" max="5" step="0.05" value="5" />
+            <div class="v5-scale" aria-hidden="true"><span>0 V</span><span>2.5 V</span><span>5 V</span></div>
+            <div class="presets">
+              <button type="button" data-v="0">0 V</button>
+              <button type="button" data-v="2.7">2.7 V</button>
+              <button type="button" data-v="5">5 V</button>
+            </div>
+          </div>
+          <div class="v5-panel__body" aria-live="polite">
+            <div>
+              <div class="v5-title vcolor" id="vTitle">{t.vOk[0]}</div>
+              <p class="v5-body" id="vBody">{t.vOk[1]}</p>
+            </div>
+            <ul class="checks" id="vChecks">
+              {t.chk.map((label: string, k: number) => <li><span>{label}</span><span style="color:var(--gold)">{k === 3 ? '5.00 V' : 'OK'}</span></li>)}
+            </ul>
+          </div>
+        </div>
+      </div>
+      <figure class="quote" data-reveal>
+        <div class="quote__mark" aria-hidden="true">“</div>
+        <div>
+          <blockquote style="margin:0"><p>{t.v5Quote}</p></blockquote>
+          <footer class="label">Yoel Rodríguez — CEO</footer>
+        </div>
+      </figure>
+      <div class="cta-band" data-reveal>
+        <p>{t.cta5vSub}</p>
+        <a href="#agendar" class="btn" data-pick="1">{t.cta5v} →</a>
+      </div>
+    </section>
+
+    <section class="sec net">
+      <div class="net__grid">
+        <div class="net__copy">
+          <div class="kicker">02 — {t.netKicker}</div>
+          <h2 class="h2" data-reveal style="font-size:clamp(44px,5.6vw,96px)">{t.netTitle}</h2>
+          <p class="lead" style="margin-top:24px">{t.netSub}</p>
+          <ul class="net__list" id="netList">
+            {nodes.map((n: any, i: number) => <li><button type="button" data-node={i}><b>{n.name}</b><span>{t.nodes[i]}</span></button></li>)}
+          </ul>
+          <div style="margin-top:32px"><a href="#agendar" class="btn" data-pick="0">{t.ctaNet} →</a></div>
+        </div>
+        <div class="net__3d" data-speed="0.06">
+          <canvas class="c3d" data-3d="network" data-nodes={JSON.stringify(nodes)} role="img" aria-label={t.netKicker}></canvas>
+          <div class="net__labels" id="netLabels" aria-hidden="true"></div>
+          <div class="drag-hint" aria-hidden="true">↻ {t.drag}</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="servicios" class="sec">
+      <div class="sec-head">
+        <div>
+          <div class="kicker">03 — {t.navServices}</div>
+          <h2 class="h2 svc-title" data-reveal>{t.servicesTitle}</h2>
+        </div>
+        <p class="lead" style="max-width:360px;font-size:16px">{t.servicesSub}</p>
+      </div>
+      <div class="tabs" role="tablist" id="svcTabs">
+        {services.map((s: any, i: number) => (
+          <button class="tab" role="tab" type="button" id={`tab-${i}`} aria-controls={`svc-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+            <Picture src={s.img} alt="" formats={['avif', 'webp']} widths={[320, 480]} sizes="(max-width: 600px) 60vw, 20vw" loading="lazy" />
+            <span class="tab__shade"></span>
+            <span class="tab__top"><span>Nº {s.num}</span><i></i></span>
+            <span class="tab__bot"><span class="tab__name">{s.name}</span><span class="tab__price">{s.price}</span></span>
+          </button>
+        ))}
+      </div>
+      {services.map((s: any, i: number) => (
+        <div class="hud detail" role="tabpanel" id={`svc-${i}`} aria-labelledby={`tab-${i}`} hidden={i !== 0}><i class="hc"></i>
+          <div class="detail__media">
+            <Picture src={s.img} alt={s.name} formats={['avif', 'webp']} widths={[480, 600]} sizes="(max-width: 900px) 100vw, 50vw" loading="lazy" data-speed="0.05" />
+            <div class="detail__fade"></div>
+            <div class="detail__scan"></div>
+            <div class="detail__target"><span>TARGET · {s.short}</span></div>
+            <div class="detail__num">● Nº {s.num}</div>
+            <div class="detail__price"><span>{s.fromLbl}</span><b>{s.price}</b></div>
+          </div>
+          <div class="detail__info">
+            <div class="detail__meta"><span>{s.tag}</span>{s.urgent && <span class="badge-urgent">{t.priority}</span>}</div>
+            <h3>{s.name}</h3>
+            <p class="detail__desc">{s.desc}</p>
+            {s.notes.length > 0 && <ul class="notes">{s.notes.map((n: string) => <li><span>{n}</span></li>)}</ul>}
+            <div class="detail__cta">
+              <a href={s.href} class="btn" data-ghl-service={s.num} {...ext(s.external)}>{s.cta} →</a>
+              <small>{t.nonRefund}</small>
+            </div>
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <section class="sec sec--alt">
+      <div class="sec-head">
+        <div>
+          <div class="kicker">VS — {t.totKicker}</div>
+          <h2 class="h2" data-reveal style="font-size:clamp(44px,6vw,104px)">{t.totTitle}</h2>
+        </div>
+        <p class="lead" style="max-width:340px;font-size:16px">{t.totSub}</p>
+      </div>
+      <div class="vs-grid">
+        {tot.map((q: any) => (
+          <button type="button" class="vs" aria-expanded="false">
+            <span class="vs__n">Nº {q.n}</span>
+            <span class="vs__opt" {...(q.neutral ? {} : q.aWin ? { 'data-win': '' } : { 'data-lose': '' })}>{q.a}</span>
+            <span class="vs__sep">— VS —</span>
+            <span class="vs__opt" {...(q.neutral ? {} : q.bWin ? { 'data-win': '' } : { 'data-lose': '' })}>{q.b}</span>
+            <span class="vs__foot">{t.totTap} ▸</span>
+            <span class="vs__ans"><b>Yoel: </b>{q.ans}</span>
+          </button>
+        ))}
+      </div>
+      <div class="close-row" data-reveal>
+        <p>{t.totClose}</p>
+        <a href="#agendar" class="btn" data-pick="1">{t.cta5v} →</a>
+      </div>
+    </section>
+
+    <section id="marcas" class="sec sec--alt">
+      <div class="kicker">04 — {t.brandsKicker}</div>
+      <h2 class="h2" data-reveal style="font-size:clamp(40px,5vw,84px);line-height:.9;max-width:1000px">{t.brandsTitle}</h2>
+      <ul class="brands">
+        {BRAND_FILES.map(([name, f]: string[]) => <li><Picture src={brandSrc(f)} alt={name} formats={['avif', 'webp']} loading="lazy" /></li>)}
+      </ul>
+      <div class="brands-more"><b>{t.brandsMore}</b><span>{t.allBrands}</span></div>
+      <div style="margin-top:40px;display:flex;justify-content:center"><a href="#agendar" class="btn">{t.ctaBrands} →</a></div>
+    </section>
+
+    <section id="nosotros" class="sec about">
+      <div class="about__pics">
+        <div class="about__pic about__pic--a" data-speed="0.1"><Picture src={imgCar} alt="" formats={['avif', 'webp']} loading="lazy" /></div>
+        <div class="about__pic about__pic--b" data-speed="-0.08"><Picture src={imgAbout} alt="" formats={['avif', 'webp']} loading="lazy" /></div>
+        <div class="about__card" data-speed="-0.2">
+          <div style="color:var(--gold)">● Yoel Rodríguez · CEO</div>
+          <div>{t.exp} <b>17 {t.years}</b></div>
+          <div>{t.focus} <b>{t.focusV}</b></div>
+        </div>
+      </div>
+      <div>
+        <div class="kicker">05 — {t.navAbout}</div>
+        <h2 class="h2" data-reveal style="font-size:clamp(44px,5vw,84px)">{t.aboutTitle}</h2>
+        <p class="body">{t.aboutP1}</p>
+        <p class="body">{t.aboutP2}</p>
+        <ul class="promises">
+          {t.promises.map(([title, body]: string[], i: number) => <li><span>0{i + 1}</span><div><b>{title}</b><p>{body}</p></div></li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section id="proceso" class="sec process">
+      <div class="process__dots" aria-hidden="true"></div>
+      <div class="sec-head" style="position:relative">
+        <div>
+          <div class="kicker">06 — {t.navProcess}</div>
+          <h2 class="h2" data-reveal style="font-size:clamp(44px,6vw,110px);line-height:.86">{t.processTitle}</h2>
+        </div>
+        <p class="lead" style="max-width:380px;font-size:16px">{t.procLead}</p>
+      </div>
+      <ol class="steps" id="steps">
+        <li class="steps__rail" aria-hidden="true"><div class="steps__fill" id="stepsFill"></div></li>
+        {t.steps.map(([title, body]: string[], i: number) => (
+          <li class="step">
+            <div class="step__num">0{i + 1}</div>
+            <div class="hud hud--sm step__card">
+              <div class="label">{t.stepWord} 0{i + 1} · {t.stepCodes[i]}</div>
+              <b>{title}</b>
+              <p>{body}</p>
+              <div class="step__bar" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <div class="guarantee">
+        <span>{t.guaranteeTag}</span>
+        <p>{t.guarantee}</p>
+        <a href="#agendar" class="btn">{t.ctaProc} →</a>
+      </div>
+    </section>
+
+    <section id="resenas" class="sec">
+      <div class="sec-head">
+        <div>
+          <div class="kicker">07 — {t.navReviews}</div>
+          <div class="score">
+            <b>5.0</b>
+            <div>
+              <div class="stars" aria-label="5/5">★★★★★</div>
+              <div class="label" style="font-size:12px;letter-spacing:.12em;color:var(--muted);margin-top:8px">{t.reviewsCount}</div>
+            </div>
+          </div>
+        </div>
+        <a href={REVIEW_URL} class="btn btn--ghost" target="_blank" rel="noopener">{t.writeReview} ↗</a>
+      </div>
+      <div class="reviews">
+        {REVIEWS.map(([name, text]: string[]) => (
+          <figure class="hud review"><i class="hc"></i>
+            <div class="stars" aria-hidden="true">★★★★★</div>
+            <blockquote style="margin:0"><p>“{text}”</p></blockquote>
+            <footer><span class="ini" aria-hidden="true">{name[0]}</span><div><cite>{name}</cite><small>Google</small></div></footer>
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <section id="agendar" class="sec book">
+      <div class="kicker" style="text-align:center">08 — {t.navBook}</div>
+      <h2 data-reveal><span>{t.bookA}</span> <span class="outline-g">{t.bookB}</span></h2>
+      <p class="book__sub">{t.bookSub}</p>
+      <div class="book__grid">
+        {services.map((s: any) => (
+          <div class="hud hud--sm bcard">
+            <div class="bcard__top"><span>Nº {s.num}</span><b>{s.price}</b></div>
+            <div class="bcard__name">{s.name}</div>
+            <div class="bcard__tag">{s.tag}</div>
+            <a href={s.href} class="btn" data-ghl-service={s.num} {...ext(s.external)}><span>{s.cta}</span><span>→</span></a>
+          </div>
+        ))}
+      </div>
+      <div class="book__extra">
+        <a href={waLink()} class="wa-card" target="_blank" rel="noopener">
+          <div><div class="label">● WHATSAPP</div><b>{t.waTitle}</b></div>
+          <span>{t.waCta} →</span>
+        </a>
+        <div class="bring">
+          <div class="label" style="letter-spacing:.12em;color:var(--gold)">{t.bringTitle}</div>
+          <ul>{t.bring.map((b: string) => <li><span>{b}</span></li>)}</ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__row">
+      <Picture src={logo} alt="Procar Performance LLC" formats={['avif', 'webp']} height={64} class="footer__logo" loading="lazy" />
+      <div class="footer__div" aria-hidden="true"></div>
+      <address class="footer__contact">
+        <a href={CONTACT.phoneHref}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E3B55B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2"></rect><path d="M11 18h2"></path></svg><span>{CONTACT.phone}</span></a>
+        <a href={`mailto:${CONTACT.email}`}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E3B55B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg><span>{CONTACT.email}</span></a>
+        <a href={CONTACT.mapsHref}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E3B55B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg><span>{CONTACT.location}</span></a>
+      </address>
+    </div>
+    <div class="footer__bottom">
+      <span>© {new Date().getFullYear()} Procar Performance LLC · {t.rights}</span>
+      <div class="social">{SOCIAL.map(([name, href]) => <a href={href} target="_blank" rel="noopener">{name}</a>)}</div>
+    </div>
+  </footer>
+
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="progress" aria-hidden="true">
+    <div class="progress__word">Scroll</div>
+    <div class="progress__rail"><div class="progress__fill" id="progFill"></div></div>
+    <div class="progress__pct" id="progPct">000%</div>
+  </div>
+  <div class="lang" id="lang">
+    <div class="lang__panel" id="langPanel" hidden>
+      <div class="lang__lbl">{t.langLbl}</div>
+      <a class="lang__opt" href={langHref.es} hreflang="es" lang="es" aria-current={lang === 'es' ? 'page' : undefined}>ES · Español</a>
+      <a class="lang__opt" href={langHref.en} hreflang="en" lang="en" aria-current={lang === 'en' ? 'page' : undefined}>EN · English</a>
+    </div>
+    <button type="button" class="lang__btn" id="langBtn" aria-expanded="false" aria-controls="langPanel" aria-label={t.langLbl}>
+      <span class="globe" aria-hidden="true"></span><b>{lang.toUpperCase()}</b><i aria-hidden="true">▾</i>
+    </button>
+  </div>
+  <a href={waLink()} class="wa-float" target="_blank" rel="noopener">WhatsApp</a>
+
+  <script>
+    import '../scripts/main.ts';
+  </script>
+</Base>

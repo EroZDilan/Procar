@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#1a1b1e;color:#EEF0EC;font-family:'JetBrains Mono',monospace}a{color:#E3B55B}a:hover{color:#EEF0EC}</style>
+</helmet>
+<section style="padding:64px;display:grid;gap:32px">
+  <div style="display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap">
+    <div>
+      <div style="font-size:12px;letter-spacing:.14em;color:#E3B55B">PROCAR PERFORMANCE · MOBILE 390×844</div>
+      <div style="font-size:14px;color:#9AA0A6;margin-top:8px">Cada pantalla es la web real y se puede desplazar e interactuar.</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:48px;flex-wrap:wrap;align-items:flex-start">
+    <sc-for list="{{ screens }}" as="s" hint-placeholder-count="4">
+      <div style="display:grid;gap:14px">
+        <div style="font-size:12px;letter-spacing:.12em;color:#9AA0A6">{{ s.label }}</div>
+        <div style="width:414px;height:868px;padding:12px;background:#0a0a0b;border-radius:56px;box-shadow:0 0 0 2px #2c2d31,0 40px 80px rgba(0,0,0,.5)">
+          <div style="position:relative;width:390px;height:844px;border-radius:44px;overflow:hidden;background:#0B0C0E">
+            <iframe src="{{ s.src }}" style="width:390px;height:844px;border:0;display:block"></iframe>
+            <div style="position:absolute;top:10px;left:50%;transform:translateX(-50%);width:120px;height:34px;border-radius:20px;background:#000"></div>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals(){
+    const f='Procar%20Performance%20v3.dc.html';
+    return {screens:[['01 · Hero',''],['02 · Prueba 5V','#tecnologia'],['03 · Servicios','#servicios'],['04 · Agendar','#agendar']].map(([label,h])=>({label,src:f+h}))};
+  }
+}
+</script>
+</body>
+</html>

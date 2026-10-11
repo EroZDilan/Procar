@@ -1,0 +1,41 @@
+---
+import '../styles/global.css';
+import archivoLatin from '../assets/fonts/archivo-latin-wdth-normal.woff2?url';
+import monoLatin from '../assets/fonts/jetbrains-mono-latin-wght-normal.woff2?url';
+import { SITE_URL } from '../config.js';
+
+interface Props {
+  lang: 'es' | 'en';
+  title: string;
+  description: string;
+}
+const { lang, title, description } = Astro.props;
+const path = lang === 'es' ? '/' : '/en/';
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0B0C0E" />
+    <link rel="canonical" href={new URL(path, SITE_URL)} />
+    <link rel="alternate" hreflang="es" href={new URL('/', SITE_URL)} />
+    <link rel="alternate" hreflang="en" href={new URL('/en/', SITE_URL)} />
+    <link rel="alternate" hreflang="x-default" href={new URL('/', SITE_URL)} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={new URL(path, SITE_URL)} />
+    <meta property="og:locale" content={lang === 'es' ? 'es_US' : 'en_US'} />
+    <!-- Las dos fuentes del primer pantallazo se piden en paralelo con el HTML -->
+    <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={monoLatin} as="font" type="font/woff2" crossorigin />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

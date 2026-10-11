@@ -1,0 +1,24 @@
+<!-- GHL › Settings › Tracking Code › Header (o Custom CSS/Head del funnel) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/three@0.149.0/build/three.min.js"></script>
+<!-- Sube procar3d.js a Media Library (o a tu hosting) y pega aquí su URL -->
+<script src="https://TU-URL/procar3d.js"></script>
+<style>
+:root{--pc-bg:#0B0C0E;--pc-bg-2:#08090B;--pc-card:#0F1114;--pc-ink:#EEF0EC;--pc-ink-2:#C7CBC6;--pc-muted:#9AA0A6;--pc-dim:#6B7178;--pc-gold:#E3B55B;--pc-gold-2:#F2D48A;--pc-red:#FF4D2E;--pc-amber:#FFB23E;--pc-wa:#25D366;--pc-line:rgba(238,240,236,.1)}
+html{scroll-behavior:smooth}
+body{background:var(--pc-bg);color:var(--pc-ink);font-family:'Archivo',sans-serif;-webkit-font-smoothing:antialiased}
+.pc-display{font-family:'Archivo',sans-serif;font-weight:800;font-stretch:75%;text-transform:uppercase;line-height:.86;letter-spacing:-.015em}
+.pc-outline{color:transparent;-webkit-text-stroke:1.5px var(--pc-gold);text-shadow:0 0 40px rgba(227,181,91,.35)}
+.pc-mono{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.pc-kicker{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--pc-gold)}
+.pc-btn{display:inline-flex;align-items:center;white-space:nowrap;background:var(--pc-gold);color:var(--pc-bg)!important;padding:15px 22px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em;box-shadow:0 0 0 1px rgba(227,181,91,.4),0 0 32px rgba(227,181,91,.25);transition:background .2s}
+.pc-btn:hover{background:var(--pc-gold-2)}
+.pc-btn-urgent{background:transparent;border:1px solid rgba(255,77,46,.7);color:#FF6A4F!important;box-shadow:none}
+.pc-btn-urgent:hover{background:var(--pc-red);color:var(--pc-bg)!important}
+.pc-hud{position:relative;border:1px solid var(--pc-line)}
+.pc-hud::before,.pc-hud::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none}
+.pc-hud::before{top:-1px;left:-1px;border-top:2px solid var(--pc-gold);border-left:2px solid var(--pc-gold)}
+.pc-hud::after{bottom:-1px;right:-1px;border-bottom:2px solid var(--pc-gold);border-right:2px solid var(--pc-gold)}
+.pc-scanlines{position:fixed;inset:0;z-index:40;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px)}
+</style>

@@ -1,0 +1,5 @@
+<!-- Elemento Custom HTML dentro de la columna derecha del hero -->
+<div style="position:relative;height:clamp(380px,62vh,680px)">
+  <canvas id="pc-hero-ecu" style="position:absolute;inset:0;width:100%;height:100%;display:block"></canvas>
+</div>
+<script>(function(){function w(cb){if(window.THREE&&window.Procar3D)cb();else setTimeout(function(){w(cb)},100);}w(function(){var x=Procar3D.car(document.getElementById('pc-hero-ecu'));addEventListener('scroll',function(){x.setScroll(scrollY/innerHeight)},{passive:true});});})();</script>

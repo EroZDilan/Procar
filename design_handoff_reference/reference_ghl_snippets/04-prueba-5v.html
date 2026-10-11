@@ -1,0 +1,15 @@
+<!-- Elemento Custom HTML: chip 3D + sonda de voltaje -->
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:24px;font-family:'Archivo',sans-serif;color:#EEF0EC">
+  <div class="pc-hud" style="position:relative;min-height:460px"><canvas id="pc-chip" style="position:absolute;inset:0;width:100%;height:100%"></canvas></div>
+  <div class="pc-hud" style="padding:32px;display:grid;gap:18px;align-content:start">
+    <div class="pc-mono" style="color:#9AA0A6">Sonda · voltaje de referencia</div>
+    <div id="pc-v" style="font-family:'JetBrains Mono',monospace;font-size:96px;line-height:.9;color:#E3B55B">5.00</div>
+    <input id="pc-range" type="range" min="0" max="5" step="0.05" value="5" style="width:100%;accent-color:#E3B55B">
+    <div id="pc-title" class="pc-display" style="font-size:44px;color:#E3B55B">La computadora está viva.</div>
+    <p id="pc-body" style="margin:0;font-size:17px;line-height:1.5;color:#C7CBC6">Con 5 voltios de referencia, el módulo responde.</p>
+  </div>
+</div>
+<script>(function(){function w(cb){if(window.THREE&&window.Procar3D)cb();else setTimeout(function(){w(cb)},100);}
+var S={ok:['#E3B55B','La computadora está viva.','Con 5 voltios de referencia, el módulo responde. Seguimos con el siguiente paso del diagnóstico.'],warn:['#FFB23E','Voltaje fuera de lo normal.','Seguimos todas las pruebas hasta encontrar de dónde viene la falla.'],dead:['#FF4D2E','0 voltios.','Lo primero: checar la alimentación — negativo, positivo y red CAN bus.']};
+w(function(){var chip=Procar3D.chip(document.getElementById('pc-chip'),{volts:5});var r=document.getElementById('pc-range');
+r.addEventListener('input',function(){var v=parseFloat(r.value);chip.setVolts(v);var k=v<=.2?'dead':v>=4.8?'ok':'warn';var s=S[k];var V=document.getElementById('pc-v');V.textContent=v.toFixed(2);V.style.color=s[0];var T=document.getElementById('pc-title');T.textContent=s[1];T.style.color=s[0];document.getElementById('pc-body').textContent=s[2];});});})();</script>
